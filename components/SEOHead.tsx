@@ -6,8 +6,8 @@ interface SEOHeadProps {
   fallbackDescription?: string;
 }
 
-export default function SEOHead({ page, fallbackTitle, fallbackDescription }: SEOHeadProps) {
-  let seo = getSEOByPage(page);
+export default async function SEOHead({ page, fallbackTitle, fallbackDescription }: SEOHeadProps) {
+  let seo = await getSEOByPage(page);
 
   if (!seo) {
     const defaultSEO = getDefaultSEO();

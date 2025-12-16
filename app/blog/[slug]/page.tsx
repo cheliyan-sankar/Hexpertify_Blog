@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     };
   }
 
-  return SEOHead({
+  return await SEOHead({
     page: `blog-${params.slug}`,
     fallbackTitle: `${blog.title} | Hexpertify Blog`,
     fallbackDescription: blog.description,
