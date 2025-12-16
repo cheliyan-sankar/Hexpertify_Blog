@@ -8,7 +8,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Plus, Trash2, ArrowLeft } from 'lucide-react';
 import AdminNav from '@/components/admin/AdminNav';
 import ProtectedRoute from '@/components/admin/ProtectedRoute';
-import { fetchAllCategories, createCategory, removeCategoryAction } from '@/lib/actions';
 import Link from 'next/link';
 import { memo } from 'react';
 
@@ -22,8 +21,13 @@ function CategoriesPage() {
 
   const loadCategories = useCallback(async () => {
     try {
-      const data = await fetchAllCategories();
-      setCategories(data);
+      const response = await fetch('/api/categories');
+      const data = await response.json();
+      if (data.success) {
+        setCategories(data.categories);
+      } else {
+        console.error('Error loading categories:', data.error);
+      }
     } catch (error) {
       console.error('Error loading categories:', error);
     } finally {
@@ -44,7 +48,16 @@ function CategoriesPage() {
     setActionLoading(true);
 
     try {
-      const result = await createCategory(newCategory.trim());
+      const response = await fetch('/api/categories', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ categoryName: newCategory.trim() }),
+      });
+      
+      const result = await response.json();
+      
       if (result.success) {
         setSuccess('Category added successfully!');
         setNewCategory('');
@@ -68,7 +81,16 @@ function CategoriesPage() {
     setActionLoading(true);
 
     try {
-      const result = await removeCategoryAction(category);
+      const response = await fetch('/api/categories', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ categoryName: category }),
+      });
+      
+      const result = await response.json();
+      
       if (result.success) {
         setSuccess('Category deleted successfully!');
         await loadCategories();

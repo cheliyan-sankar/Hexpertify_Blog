@@ -8,7 +8,7 @@ async function githubRequest(endpoint: string, options: RequestInit = {}) {
   const response = await fetch(url, {
     ...options,
     headers: {
-      'Authorization': `Bearer ${GITHUB_TOKEN}`,
+      'Authorization': `token ${GITHUB_TOKEN}`,
       'Accept': 'application/vnd.github+json',
       'X-GitHub-Api-Version': '2022-11-28',
       ...options.headers,
