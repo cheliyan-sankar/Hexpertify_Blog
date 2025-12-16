@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,8 +10,9 @@ import AdminNav from '@/components/admin/AdminNav';
 import ProtectedRoute from '@/components/admin/ProtectedRoute';
 import { fetchAllCategories, createCategory, removeCategoryAction } from '@/lib/actions';
 import Link from 'next/link';
+import { memo } from 'react';
 
-export default function CategoriesPage() {
+function CategoriesPage() {
   const [categories, setCategories] = useState<string[]>([]);
   const [newCategory, setNewCategory] = useState('');
   const [loading, setLoading] = useState(true);
@@ -19,11 +20,7 @@ export default function CategoriesPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  useEffect(() => {
-    loadCategories();
-  }, []);
-
-  const loadCategories = async () => {
+  const loadCategories = useCallback(async () => {
     try {
       const data = await fetchAllCategories();
       setCategories(data);
@@ -32,7 +29,11 @@ export default function CategoriesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadCategories();
+  }, [loadCategories]);
 
   const handleAddCategory = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -182,3 +183,5 @@ export default function CategoriesPage() {
     </ProtectedRoute>
   );
 }
+
+export default memo(CategoriesPage);
