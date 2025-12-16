@@ -70,6 +70,8 @@ export async function listDirectory(path: string): Promise<string[]> {
     throw error;
   }
 }
+
+export async function deleteFile(path: string, message: string) {
   const sha = await getFileSha(path);
   if (!sha) {
     throw new Error('File not found');
