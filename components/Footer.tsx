@@ -11,8 +11,7 @@ export default function Footer() {
     services: [
       { label: 'All Posts', href: '/blog' },
     ],
-
-    ],
+  };
   };
 
   return (
