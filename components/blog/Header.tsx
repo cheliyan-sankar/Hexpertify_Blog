@@ -25,9 +25,9 @@ export default function Header() {
               <Image
                 src="/purple_logo.jpeg"
                 alt="Expertify Logo"
-                width={200}
-                height={50}
-                className="h-10 w-auto cursor-pointer"
+                width={314}
+                height={80}
+                className="h-16 w-auto cursor-pointer"
                 priority
               />
             </Link>
