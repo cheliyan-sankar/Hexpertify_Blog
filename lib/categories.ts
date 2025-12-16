@@ -9,30 +9,29 @@ export interface CategoriesData {
 }
 
 function ensureCategoriesFile() {
-  const dir = path.dirname(categoriesFilePath);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-
-  if (!fs.existsSync(categoriesFilePath)) {
-    const defaultData: CategoriesData = {
-      categories: ['All', 'Mental Health', 'Fitness', 'Career', 'AI', 'Cloud', 'Technology']
-    };
-    fs.writeFileSync(categoriesFilePath, JSON.stringify(defaultData, null, 2), 'utf8');
-  }
+  // No longer creating file here, as writing is handled via GitHub API
 }
 
 export function getAllCategories(): string[] {
-  ensureCategoriesFile();
-  const fileContents = fs.readFileSync(categoriesFilePath, 'utf8');
-  const data: CategoriesData = JSON.parse(fileContents);
-  return data.categories;
+  try {
+    const fileContents = fs.readFileSync(categoriesFilePath, 'utf8');
+    const data: CategoriesData = JSON.parse(fileContents);
+    return data.categories;
+  } catch (error) {
+    // If file not found or error, return default categories
+    return ['All', 'Mental Health', 'Fitness', 'Career', 'AI', 'Cloud', 'Technology'];
+  }
 }
 
 export function addCategory(category: string): { success: boolean; error?: string } {
   try {
-    const fileContents = fs.readFileSync(categoriesFilePath, 'utf8');
-    const data: CategoriesData = JSON.parse(fileContents);
+    let data: CategoriesData;
+    try {
+      const fileContents = fs.readFileSync(categoriesFilePath, 'utf8');
+      data = JSON.parse(fileContents);
+    } catch {
+      data = { categories: ['All', 'Mental Health', 'Fitness', 'Career', 'AI', 'Cloud', 'Technology'] };
+    }
 
     if (data.categories.includes(category)) {
       return { success: false, error: 'Category already exists' };
@@ -50,8 +49,13 @@ export function addCategory(category: string): { success: boolean; error?: strin
 
 export function deleteCategory(category: string): { success: boolean; error?: string } {
   try {
-    const fileContents = fs.readFileSync(categoriesFilePath, 'utf8');
-    const data: CategoriesData = JSON.parse(fileContents);
+    let data: CategoriesData;
+    try {
+      const fileContents = fs.readFileSync(categoriesFilePath, 'utf8');
+      data = JSON.parse(fileContents);
+    } catch {
+      data = { categories: ['All', 'Mental Health', 'Fitness', 'Career', 'AI', 'Cloud', 'Technology'] };
+    }
 
     if (category === 'All') {
       return { success: false, error: 'Cannot delete "All" category' };
