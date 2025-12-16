@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { commitFile, getFileSha, deleteFile } from './github';
+import { commitFile, getFileSha, deleteFile, getFileContent, listDirectory } from './github';
 
 const seoDirectory = path.join(process.cwd(), 'content/seo');
 
@@ -28,39 +28,42 @@ export function ensureSEODirectory() {
   }
 }
 
-export function getAllSEOPages(): SEOMetadata[] {
+export async function getAllSEOPages(): Promise<SEOMetadata[]> {
   try {
-    ensureSEODirectory();
+    const fileNames = await listDirectory('content/seo');
+    const allSEO = await Promise.all(
+      fileNames
+        .filter((fileName) => fileName.endsWith('.json'))
+        .map(async (fileName) => {
+          const page = fileName.replace(/\.json$/, '');
+          const filePath = `content/seo/${fileName}`;
+          const fileContents = await getFileContent(filePath);
+          if (!fileContents) return null;
 
-    const fileNames = fs.readdirSync(seoDirectory);
-    const allSEO = fileNames
-      .filter((fileName) => fileName.endsWith('.json'))
-      .map((fileName) => {
-        const page = fileName.replace(/\.json$/, '');
-        const fullPath = path.join(seoDirectory, fileName);
-        const fileContents = fs.readFileSync(fullPath, 'utf8');
-        const data = JSON.parse(fileContents);
+          const data = JSON.parse(fileContents);
 
-        return {
-          page,
-          ...data,
-        } as SEOMetadata;
-      })
+          return {
+            page,
+            ...data,
+          } as SEOMetadata;
+        })
+    );
+
+    return allSEO
+      .filter((seo): seo is SEOMetadata => seo !== null)
       .sort((a, b) => a.page.localeCompare(b.page));
-
-    return allSEO;
   } catch (error) {
     console.error('Error reading SEO pages:', error);
     return [];
   }
 }
 
-export function getSEOByPage(page: string): SEOMetadata | null {
+export async function getSEOByPage(page: string): Promise<SEOMetadata | null> {
   try {
-    ensureSEODirectory();
+    const filePath = `content/seo/${page}.json`;
+    const fileContents = await getFileContent(filePath);
+    if (!fileContents) return null;
 
-    const fullPath = path.join(seoDirectory, `${page}.json`);
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
     const data = JSON.parse(fileContents);
 
     return {

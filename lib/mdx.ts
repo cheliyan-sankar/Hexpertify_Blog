@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
-import { commitFile, getFileSha, deleteFile } from './github';
+import { commitFile, getFileSha, deleteFile, getFileContent, listDirectory } from './github';
 
 const postsDirectory = path.join(process.cwd(), 'content/posts');
 
@@ -39,25 +39,30 @@ export function ensurePostsDirectory() {
   }
 }
 
-export function getAllPosts(): Post[] {
+export async function getAllPosts(): Promise<Post[]> {
   try {
-    ensurePostsDirectory();
+    const fileNames = await listDirectory('content/posts');
+    const allPostsData = await Promise.all(
+      fileNames
+        .filter((fileName) => fileName.endsWith('.mdx'))
+        .map(async (fileName) => {
+          const fileSlug = fileName.replace(/\.mdx$/, '');
+          const filePath = `content/posts/${fileName}`;
+          const fileContents = await getFileContent(filePath);
+          if (!fileContents) return null;
 
-    const fileNames = fs.readdirSync(postsDirectory);
-    const allPostsData = fileNames
-      .filter((fileName) => fileName.endsWith('.mdx'))
-      .map((fileName) => {
-        const fileSlug = fileName.replace(/\.mdx$/, '');
-        const fullPath = path.join(postsDirectory, fileName);
-        const fileContents = fs.readFileSync(fullPath, 'utf8');
-        const { data, content } = matter(fileContents);
+          const { data, content } = matter(fileContents);
 
-        return {
-          ...( data as PostMetadata),
-          slug: fileSlug,
-          content,
-        };
-      })
+          return {
+            ...(data as PostMetadata),
+            slug: fileSlug,
+            content,
+          };
+        })
+    );
+
+    return allPostsData
+      .filter((post): post is Post => post !== null)
       .sort((a, b) => {
         if (new Date(a.date) < new Date(b.date)) {
           return 1;
@@ -65,25 +70,23 @@ export function getAllPosts(): Post[] {
           return -1;
         }
       });
-
-    return allPostsData;
   } catch (error) {
     console.error('Error reading posts:', error);
     return [];
   }
 }
 
-export function getPublishedPosts(): Post[] {
-  const allPosts = getAllPosts();
+export async function getPublishedPosts(): Promise<Post[]> {
+  const allPosts = await getAllPosts();
   return allPosts.filter((post) => post.published);
 }
 
-export function getPostBySlug(slug: string): Post | null {
+export async function getPostBySlug(slug: string): Promise<Post | null> {
   try {
-    ensurePostsDirectory();
+    const filePath = `content/posts/${slug}.mdx`;
+    const fileContents = await getFileContent(filePath);
+    if (!fileContents) return null;
 
-    const fullPath = path.join(postsDirectory, `${slug}.mdx`);
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
     const { data, content } = matter(fileContents);
 
     return {

@@ -15,7 +15,7 @@ interface TOCItem {
 }
 
 async function getBlogData(slug: string) {
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
 
   if (!post || !post.published) return null;
 
@@ -55,7 +55,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 export default async function BlogDetailPage({ params }: { params: { slug: string } }) {
   const blog = await getBlogData(params.slug);
-  const faqs = getFAQsByPage(params.slug);
+  const faqs = await getFAQsByPage(params.slug);
 
   if (!blog) {
     return (

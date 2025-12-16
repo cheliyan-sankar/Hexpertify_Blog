@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { commitFile, getFileSha, deleteFile } from './github';
+import { commitFile, getFileSha, deleteFile, getFileContent } from './github';
 
 const categoriesFilePath = path.join(process.cwd(), 'content/categories.json');
 
@@ -12,9 +12,12 @@ function ensureCategoriesFile() {
   // No longer creating file here, as writing is handled via GitHub API
 }
 
-export function getAllCategories(): string[] {
+export async function getAllCategories(): Promise<string[]> {
   try {
-    const fileContents = fs.readFileSync(categoriesFilePath, 'utf8');
+    const fileContents = await getFileContent('content/categories.json');
+    if (!fileContents) {
+      return ['All', 'Mental Health', 'Fitness', 'Career', 'AI', 'Cloud', 'Technology'];
+    }
     const data: CategoriesData = JSON.parse(fileContents);
     return data.categories;
   } catch (error) {
@@ -23,12 +26,12 @@ export function getAllCategories(): string[] {
   }
 }
 
-export function addCategory(category: string): { success: boolean; error?: string } {
+export async function addCategory(category: string): Promise<{ success: boolean; error?: string }> {
   try {
     let data: CategoriesData;
     try {
-      const fileContents = fs.readFileSync(categoriesFilePath, 'utf8');
-      data = JSON.parse(fileContents);
+      const fileContents = await getFileContent('content/categories.json');
+      data = fileContents ? JSON.parse(fileContents) : { categories: ['All', 'Mental Health', 'Fitness', 'Career', 'AI', 'Cloud', 'Technology'] };
     } catch {
       data = { categories: ['All', 'Mental Health', 'Fitness', 'Career', 'AI', 'Cloud', 'Technology'] };
     }
@@ -39,7 +42,7 @@ export function addCategory(category: string): { success: boolean; error?: strin
 
     data.categories.push(category);
     const filePath = 'content/categories.json';
-    commitFile(filePath, JSON.stringify(data, null, 2), `Add category: ${category}`);
+    await commitFile(filePath, JSON.stringify(data, null, 2), `Add category: ${category}`);
 
     return { success: true };
   } catch (error: any) {
@@ -47,12 +50,12 @@ export function addCategory(category: string): { success: boolean; error?: strin
   }
 }
 
-export function deleteCategory(category: string): { success: boolean; error?: string } {
+export async function deleteCategory(category: string): Promise<{ success: boolean; error?: string }> {
   try {
     let data: CategoriesData;
     try {
-      const fileContents = fs.readFileSync(categoriesFilePath, 'utf8');
-      data = JSON.parse(fileContents);
+      const fileContents = await getFileContent('content/categories.json');
+      data = fileContents ? JSON.parse(fileContents) : { categories: ['All', 'Mental Health', 'Fitness', 'Career', 'AI', 'Cloud', 'Technology'] };
     } catch {
       data = { categories: ['All', 'Mental Health', 'Fitness', 'Career', 'AI', 'Cloud', 'Technology'] };
     }
@@ -63,7 +66,7 @@ export function deleteCategory(category: string): { success: boolean; error?: st
 
     data.categories = data.categories.filter(c => c !== category);
     const filePath = 'content/categories.json';
-    commitFile(filePath, JSON.stringify(data, null, 2), `Delete category: ${category}`);
+    await commitFile(filePath, JSON.stringify(data, null, 2), `Delete category: ${category}`);
 
     return { success: true };
   } catch (error: any) {
@@ -71,11 +74,11 @@ export function deleteCategory(category: string): { success: boolean; error?: st
   }
 }
 
-export function updateCategories(categories: string[]): { success: boolean; error?: string } {
+export async function updateCategories(categories: string[]): Promise<{ success: boolean; error?: string }> {
   try {
     const data: CategoriesData = { categories };
     const filePath = 'content/categories.json';
-    commitFile(filePath, JSON.stringify(data, null, 2), `Update categories`);
+    await commitFile(filePath, JSON.stringify(data, null, 2), `Update categories`);
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };

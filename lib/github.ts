@@ -47,7 +47,29 @@ export async function commitFile(path: string, content: string, message: string)
   });
 }
 
-export async function deleteFile(path: string, message: string) {
+export async function getFileContent(path: string): Promise<string | null> {
+  try {
+    const data = await githubRequest(`/contents/${path}?ref=${GITHUB_BRANCH}`);
+    return Buffer.from(data.content, 'base64').toString('utf8');
+  } catch (error: any) {
+    if (error.message.includes('404')) {
+      return null;
+    }
+    throw error;
+  }
+}
+
+export async function listDirectory(path: string): Promise<string[]> {
+  try {
+    const data = await githubRequest(`/contents/${path}?ref=${GITHUB_BRANCH}`);
+    return data.filter((item: any) => item.type === 'file').map((item: any) => item.name);
+  } catch (error: any) {
+    if (error.message.includes('404')) {
+      return [];
+    }
+    throw error;
+  }
+}
   const sha = await getFileSha(path);
   if (!sha) {
     throw new Error('File not found');

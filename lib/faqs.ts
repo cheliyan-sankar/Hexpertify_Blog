@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
-import { commitFile, getFileSha, deleteFile } from './github';
+import { commitFile, getFileSha, deleteFile, getFileContent, listDirectory } from './github';
 
 const faqsDirectory = path.join(process.cwd(), 'content/faqs');
 
@@ -24,50 +24,53 @@ export function ensureFAQsDirectory() {
   }
 }
 
-export function getAllFAQs(): FAQ[] {
+export async function getAllFAQs(): Promise<FAQ[]> {
   try {
-    ensureFAQsDirectory();
+    const fileNames = await listDirectory('content/faqs');
+    const allFAQs = await Promise.all(
+      fileNames
+        .filter((fileName) => fileName.endsWith('.mdx'))
+        .map(async (fileName) => {
+          const id = fileName.replace(/\.mdx$/, '');
+          const filePath = `content/faqs/${fileName}`;
+          const fileContents = await getFileContent(filePath);
+          if (!fileContents) return null;
 
-    const fileNames = fs.readdirSync(faqsDirectory);
-    const allFAQs = fileNames
-      .filter((fileName) => fileName.endsWith('.mdx'))
-      .map((fileName) => {
-        const id = fileName.replace(/\.mdx$/, '');
-        const fullPath = path.join(faqsDirectory, fileName);
-        const fileContents = fs.readFileSync(fullPath, 'utf8');
-        const { data } = matter(fileContents);
+          const { data } = matter(fileContents);
 
-        return {
-          id,
-          question: data.question || '',
-          answer: data.answer || '',
-          category: data.category || 'General',
-          published: data.published || false,
-          order: data.order || 0,
-          createdAt: data.createdAt || new Date().toISOString(),
-          relatedTo: data.relatedTo || 'homepage',
-        };
-      })
+          return {
+            id,
+            question: data.question || '',
+            answer: data.answer || '',
+            category: data.category || 'General',
+            published: data.published || false,
+            order: data.order || 0,
+            createdAt: data.createdAt || new Date().toISOString(),
+            relatedTo: data.relatedTo || 'homepage',
+          };
+        })
+    );
+
+    return allFAQs
+      .filter((faq): faq is FAQ => faq !== null)
       .sort((a, b) => a.order - b.order);
-
-    return allFAQs;
   } catch (error) {
     console.error('Error reading FAQs:', error);
     return [];
   }
 }
 
-export function getPublishedFAQs(): FAQ[] {
-  const allFAQs = getAllFAQs();
+export async function getPublishedFAQs(): Promise<FAQ[]> {
+  const allFAQs = await getAllFAQs();
   return allFAQs.filter((faq) => faq.published);
 }
 
-export function getFAQById(id: string): FAQ | null {
+export async function getFAQById(id: string): Promise<FAQ | null> {
   try {
-    ensureFAQsDirectory();
+    const filePath = `content/faqs/${id}.mdx`;
+    const fileContents = await getFileContent(filePath);
+    if (!fileContents) return null;
 
-    const fullPath = path.join(faqsDirectory, `${id}.mdx`);
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
     const { data } = matter(fileContents);
 
     return {
@@ -120,7 +123,7 @@ export function getAllFAQCategories(): string[] {
   return ['All', ...Array.from(categories).sort()];
 }
 
-export function getFAQsByPage(pageName: string): FAQ[] {
-  const allFAQs = getPublishedFAQs();
+export async function getFAQsByPage(pageName: string): Promise<FAQ[]> {
+  const allFAQs = await getPublishedFAQs();
   return allFAQs.filter((faq) => faq.relatedTo === pageName);
 }

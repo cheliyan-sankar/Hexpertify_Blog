@@ -16,11 +16,11 @@ function safeRevalidate(path: string, type?: string) {
 }
 
 export async function fetchAllPosts() {
-  return getAllPosts();
+  return await getAllPosts();
 }
 
 export async function fetchPostBySlug(slug: string) {
-  return getPostBySlug(slug);
+  return await getPostBySlug(slug);
 }
 
 export async function createPost(metadata: PostMetadata, content: string) {
@@ -100,7 +100,7 @@ export async function togglePublishPost(slug: string) {
 }
 
 export async function fetchAllCategories() {
-  return getAllCategories();
+  return await getAllCategories();
 }
 
 export async function createCategory(categoryName: string) {
@@ -136,15 +136,15 @@ export async function removeCategoryAction(categoryName: string) {
 }
 
 export async function fetchAllFAQs() {
-  return getAllFAQs();
+  return await getAllFAQs();
 }
 
 export async function fetchFAQById(id: string) {
-  return getFAQById(id);
+  return await getFAQById(id);
 }
 
 export async function fetchFAQsByPage(pageName: string) {
-  return getFAQsByPage(pageName);
+  return await getFAQsByPage(pageName);
 }
 
 export async function createFAQ(id: string, metadata: Omit<FAQMetadata, 'id'>) {
@@ -215,11 +215,11 @@ export async function togglePublishFAQ(id: string) {
 }
 
 export async function fetchAllSEO() {
-  return getAllSEOPages();
+  return await getAllSEOPages();
 }
 
 export async function fetchSEOByPage(page: string) {
-  return getSEOByPage(page);
+  return await getSEOByPage(page);
 }
 
 export async function fetchDefaultSEO() {
