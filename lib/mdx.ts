@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import { commitFile, getFileSha, deleteFile } from './github';
 
 const postsDirectory = path.join(process.cwd(), 'content/posts');
 
@@ -91,8 +92,6 @@ export function getPostBySlug(slug: string): Post | null {
 }
 
 export function savePost(slug: string, metadata: PostMetadata, content: string) {
-  ensurePostsDirectory();
-
   const frontmatter = matter.stringify(content, {
     title: metadata.title,
     slug: metadata.slug,
@@ -109,13 +108,11 @@ export function savePost(slug: string, metadata: PostMetadata, content: string) 
     tableOfContents: metadata.tableOfContents || [],
   });
 
-  const filePath = path.join(postsDirectory, `${slug}.mdx`);
-  fs.writeFileSync(filePath, frontmatter, 'utf8');
+  const filePath = `content/posts/${slug}.mdx`;
+  commitFile(filePath, frontmatter, `Update post: ${slug}`);
 }
 
 export function deletePost(slug: string) {
-  const filePath = path.join(postsDirectory, `${slug}.mdx`);
-  if (fs.existsSync(filePath)) {
-    fs.unlinkSync(filePath);
-  }
+  const filePath = `content/posts/${slug}.mdx`;
+  deleteFile(filePath, `Delete post: ${slug}`);
 }

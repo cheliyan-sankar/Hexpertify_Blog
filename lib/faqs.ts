@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import { commitFile, getFileSha, deleteFile } from './github';
 
 const faqsDirectory = path.join(process.cwd(), 'content/faqs');
 
@@ -80,8 +81,6 @@ export function getFAQById(id: string): FAQ | null {
 }
 
 export function saveFAQ(id: string, metadata: Omit<FAQMetadata, 'id'>) {
-  ensureFAQsDirectory();
-
   const frontmatter = matter.stringify('', {
     question: metadata.question,
     answer: metadata.answer,
@@ -92,15 +91,13 @@ export function saveFAQ(id: string, metadata: Omit<FAQMetadata, 'id'>) {
     relatedTo: metadata.relatedTo,
   });
 
-  const filePath = path.join(faqsDirectory, `${id}.mdx`);
-  fs.writeFileSync(filePath, frontmatter, 'utf8');
+  const filePath = `content/faqs/${id}.mdx`;
+  commitFile(filePath, frontmatter, `Update FAQ: ${id}`);
 }
 
 export function deleteFAQ(id: string) {
-  const filePath = path.join(faqsDirectory, `${id}.mdx`);
-  if (fs.existsSync(filePath)) {
-    fs.unlinkSync(filePath);
-  }
+  const filePath = `content/faqs/${id}.mdx`;
+  deleteFile(filePath, `Delete FAQ: ${id}`);
 }
 
 export function getFAQsByCategory(category: string): FAQ[] {

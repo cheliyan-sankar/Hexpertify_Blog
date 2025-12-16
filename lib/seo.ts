@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { commitFile, getFileSha, deleteFile } from './github';
 
 const seoDirectory = path.join(process.cwd(), 'content/seo');
 
@@ -67,8 +68,6 @@ export function getSEOByPage(page: string): SEOMetadata | null {
 }
 
 export function saveSEO(page: string, metadata: Omit<SEOMetadata, 'page'>) {
-  ensureSEODirectory();
-
   const data = {
     title: metadata.title,
     description: metadata.description,
@@ -86,15 +85,13 @@ export function saveSEO(page: string, metadata: Omit<SEOMetadata, 'page'>) {
     updatedAt: new Date().toISOString(),
   };
 
-  const filePath = path.join(seoDirectory, `${page}.json`);
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
+  const filePath = `content/seo/${page}.json`;
+  commitFile(filePath, JSON.stringify(data, null, 2), `Update SEO: ${page}`);
 }
 
 export function deleteSEO(page: string) {
-  const filePath = path.join(seoDirectory, `${page}.json`);
-  if (fs.existsSync(filePath)) {
-    fs.unlinkSync(filePath);
-  }
+  const filePath = `content/seo/${page}.json`;
+  deleteFile(filePath, `Delete SEO: ${page}`);
 }
 
 export function getDefaultSEO(): Omit<SEOMetadata, 'page'> {

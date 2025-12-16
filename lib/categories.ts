@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { commitFile, getFileSha, deleteFile } from './github';
 
 const categoriesFilePath = path.join(process.cwd(), 'content/categories.json');
 
@@ -30,7 +31,6 @@ export function getAllCategories(): string[] {
 
 export function addCategory(category: string): { success: boolean; error?: string } {
   try {
-    ensureCategoriesFile();
     const fileContents = fs.readFileSync(categoriesFilePath, 'utf8');
     const data: CategoriesData = JSON.parse(fileContents);
 
@@ -39,7 +39,8 @@ export function addCategory(category: string): { success: boolean; error?: strin
     }
 
     data.categories.push(category);
-    fs.writeFileSync(categoriesFilePath, JSON.stringify(data, null, 2), 'utf8');
+    const filePath = 'content/categories.json';
+    commitFile(filePath, JSON.stringify(data, null, 2), `Add category: ${category}`);
 
     return { success: true };
   } catch (error: any) {
@@ -49,7 +50,6 @@ export function addCategory(category: string): { success: boolean; error?: strin
 
 export function deleteCategory(category: string): { success: boolean; error?: string } {
   try {
-    ensureCategoriesFile();
     const fileContents = fs.readFileSync(categoriesFilePath, 'utf8');
     const data: CategoriesData = JSON.parse(fileContents);
 
@@ -58,7 +58,8 @@ export function deleteCategory(category: string): { success: boolean; error?: st
     }
 
     data.categories = data.categories.filter(c => c !== category);
-    fs.writeFileSync(categoriesFilePath, JSON.stringify(data, null, 2), 'utf8');
+    const filePath = 'content/categories.json';
+    commitFile(filePath, JSON.stringify(data, null, 2), `Delete category: ${category}`);
 
     return { success: true };
   } catch (error: any) {
@@ -68,9 +69,9 @@ export function deleteCategory(category: string): { success: boolean; error?: st
 
 export function updateCategories(categories: string[]): { success: boolean; error?: string } {
   try {
-    ensureCategoriesFile();
     const data: CategoriesData = { categories };
-    fs.writeFileSync(categoriesFilePath, JSON.stringify(data, null, 2), 'utf8');
+    const filePath = 'content/categories.json';
+    commitFile(filePath, JSON.stringify(data, null, 2), `Update categories`);
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };

@@ -4,6 +4,7 @@ import { getAllPosts, getPostBySlug, savePost, deletePost as deleteMdxPost, Post
 import { getAllCategories, addCategory as addCategoryToFile, deleteCategory as deleteCategoryFromFile } from './categories';
 import { getAllFAQs, getFAQById, getFAQsByPage, saveFAQ, deleteFAQ as deleteFAQFile, FAQMetadata } from './faqs';
 import { getAllSEOPages, getSEOByPage, saveSEO, deleteSEO as deleteSEOFile, SEOMetadata, getDefaultSEO } from './seo';
+import { triggerRebuild } from './github';
 import { revalidatePath } from 'next/cache';
 
 function safeRevalidate(path: string, type?: string) {
@@ -29,6 +30,7 @@ export async function createPost(metadata: PostMetadata, content: string) {
     safeRevalidate('/blog/[slug]', 'page');
     safeRevalidate('/admin/dashboard');
     safeRevalidate('/admin/posts');
+    await triggerRebuild();
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };
@@ -42,6 +44,7 @@ export async function updatePost(slug: string, metadata: PostMetadata, content: 
     safeRevalidate(`/blog/${slug}`);
     safeRevalidate('/admin/dashboard');
     safeRevalidate('/admin/posts');
+    await triggerRebuild();
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };
@@ -54,6 +57,7 @@ export async function deletePost(slug: string) {
     safeRevalidate('/');
     safeRevalidate('/admin/dashboard');
     safeRevalidate('/admin/posts');
+    await triggerRebuild();
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };
@@ -88,6 +92,7 @@ export async function togglePublishPost(slug: string) {
     safeRevalidate(`/blog/${slug}`);
     safeRevalidate('/admin/dashboard');
     safeRevalidate('/admin/posts');
+    await triggerRebuild();
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };
@@ -106,6 +111,7 @@ export async function createCategory(categoryName: string) {
       safeRevalidate('/admin/dashboard');
       safeRevalidate('/admin/posts');
       safeRevalidate('/admin/categories');
+      await triggerRebuild();
     }
     return result;
   } catch (error: any) {
@@ -121,6 +127,7 @@ export async function removeCategoryAction(categoryName: string) {
       safeRevalidate('/admin/dashboard');
       safeRevalidate('/admin/posts');
       safeRevalidate('/admin/categories');
+      await triggerRebuild();
     }
     return result;
   } catch (error: any) {
@@ -146,6 +153,7 @@ export async function createFAQ(id: string, metadata: Omit<FAQMetadata, 'id'>) {
     safeRevalidate('/');
     safeRevalidate('/blog/[slug]', 'page');
     safeRevalidate('/admin/faqs');
+    await triggerRebuild();
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };
@@ -158,6 +166,7 @@ export async function updateFAQ(id: string, metadata: Omit<FAQMetadata, 'id'>) {
     safeRevalidate('/');
     safeRevalidate('/blog/[slug]', 'page');
     safeRevalidate('/admin/faqs');
+    await triggerRebuild();
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };
@@ -170,6 +179,7 @@ export async function deleteFAQ(id: string) {
     safeRevalidate('/');
     safeRevalidate('/blog/[slug]', 'page');
     safeRevalidate('/admin/faqs');
+    await triggerRebuild();
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };
@@ -197,6 +207,7 @@ export async function togglePublishFAQ(id: string) {
     safeRevalidate('/');
     safeRevalidate('/blog/[slug]', 'page');
     safeRevalidate('/admin/faqs');
+    await triggerRebuild();
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };
@@ -221,6 +232,7 @@ export async function createSEO(page: string, metadata: Omit<SEOMetadata, 'page'
     safeRevalidate('/');
     safeRevalidate(`/${page}`);
     safeRevalidate('/admin/seo');
+    await triggerRebuild();
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };
@@ -233,6 +245,7 @@ export async function updateSEO(page: string, metadata: Omit<SEOMetadata, 'page'
     safeRevalidate('/');
     safeRevalidate(`/${page}`);
     safeRevalidate('/admin/seo');
+    await triggerRebuild();
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };
@@ -244,6 +257,7 @@ export async function deleteSEO(page: string) {
     deleteSEOFile(page);
     safeRevalidate('/');
     safeRevalidate('/admin/seo');
+    await triggerRebuild();
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };
