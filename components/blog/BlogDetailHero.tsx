@@ -1,0 +1,60 @@
+'use client';
+
+import Link from 'next/link';
+import Image from 'next/image';
+
+interface BlogDetailHeroProps {
+  blog: {
+    title: string;
+    author: string;
+    date: string;
+    readTime: string;
+    imageUrl: string;
+    category: string;
+  };
+}
+
+export default function BlogDetailHero({ blog }: BlogDetailHeroProps) {
+  return (
+    <div className="py-8">
+      <div className="flex items-center gap-2 text-sm text-gray-600 mb-6">
+        <Link href="/" className="hover:text-gray-900">
+          Home
+        </Link>
+        <span>›</span>
+        <Link href="/" className="hover:text-gray-900">
+          Blog
+        </Link>
+        <span>›</span>
+        <Link href="/" className="hover:text-gray-900">
+          {blog.category}
+        </Link>
+        <span>›</span>
+        <span className="text-gray-900">{blog.title}</span>
+      </div>
+
+      <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 text-center">
+        {blog.title}
+      </h1>
+
+      <div className="flex items-center justify-center gap-6 text-sm text-gray-600 mb-8">
+        <span className="text-purple-600 font-medium">By {blog.author}</span>
+        <span>|</span>
+        <span>{blog.date}</span>
+        <span>|</span>
+        <span>{blog.readTime}</span>
+      </div>
+
+      <div className="rounded-lg overflow-hidden mb-8">
+        <Image
+          src={blog.imageUrl}
+          alt={blog.title}
+          width={800}
+          height={400}
+          className="w-full h-auto object-cover"
+          priority
+        />
+      </div>
+    </div>
+  );
+}
