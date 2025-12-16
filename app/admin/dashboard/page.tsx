@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,6 +9,7 @@ import AdminNav from '@/components/admin/AdminNav';
 import ProtectedRoute from '@/components/admin/ProtectedRoute';
 import { fetchAllPosts, deletePost, togglePublishPost } from '@/lib/actions';
 import Image from 'next/image';
+import { memo } from 'react';
 
 interface BlogPost {
   slug: string;
@@ -21,15 +22,11 @@ interface BlogPost {
   date: string;
 }
 
-export default function AdminDashboard() {
+function AdminDashboard() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadPosts();
-  }, []);
-
-  const loadPosts = async () => {
+  const loadPosts = useCallback(async () => {
     try {
       const data = await fetchAllPosts();
       setPosts(data);
@@ -38,7 +35,11 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadPosts();
+  }, [loadPosts]);
 
   const handleDelete = async (slug: string) => {
     if (!confirm('Are you sure you want to delete this post?')) return;
@@ -185,3 +186,5 @@ export default function AdminDashboard() {
     </ProtectedRoute>
   );
 }
+
+export default memo(AdminDashboard);

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,6 +9,7 @@ import { Plus, Edit, Trash2, Search, ArrowLeft, Globe } from 'lucide-react';
 import AdminNav from '@/components/admin/AdminNav';
 import ProtectedRoute from '@/components/admin/ProtectedRoute';
 import { fetchAllSEO, deleteSEO } from '@/lib/actions';
+import { memo } from 'react';
 
 interface SEOPage {
   page: string;
@@ -17,21 +18,13 @@ interface SEOPage {
   updatedAt: string;
 }
 
-export default function SEOManagementPage() {
+function SEOManagementPage() {
   const [seoPages, setSeoPages] = useState<SEOPage[]>([]);
   const [filteredPages, setFilteredPages] = useState<SEOPage[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    loadSEO();
-  }, []);
-
-  useEffect(() => {
-    filterPages();
-  }, [seoPages, searchQuery]);
-
-  const loadSEO = async () => {
+  const loadSEO = useCallback(async () => {
     try {
       const data = await fetchAllSEO();
       setSeoPages(data);
@@ -40,9 +33,9 @@ export default function SEOManagementPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const filterPages = () => {
+  const filterPages = useCallback(() => {
     let filtered = [...seoPages];
 
     if (searchQuery) {
@@ -54,7 +47,15 @@ export default function SEOManagementPage() {
     }
 
     setFilteredPages(filtered);
-  };
+  }, [seoPages, searchQuery]);
+
+  useEffect(() => {
+    loadSEO();
+  }, [loadSEO]);
+
+  useEffect(() => {
+    filterPages();
+  }, [filterPages]);
 
   const handleDelete = async (page: string) => {
     if (!confirm(`Are you sure you want to delete SEO settings for "${page}"?`)) return;
@@ -194,3 +195,5 @@ export default function SEOManagementPage() {
     </ProtectedRoute>
   );
 }
+
+export default memo(SEOManagementPage);

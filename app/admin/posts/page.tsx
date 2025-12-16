@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,6 +11,7 @@ import AdminNav from '@/components/admin/AdminNav';
 import ProtectedRoute from '@/components/admin/ProtectedRoute';
 import { fetchAllPosts, deletePost, togglePublishPost, fetchAllCategories } from '@/lib/actions';
 import Image from 'next/image';
+import { memo } from 'react';
 
 interface BlogPost {
   slug: string;
@@ -23,7 +24,7 @@ interface BlogPost {
   date: string;
 }
 
-export default function AllPostsPage() {
+function AllPostsPage() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
@@ -34,13 +35,13 @@ export default function AllPostsPage() {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [loadData]);
 
   useEffect(() => {
     filterPosts();
-  }, [posts, searchQuery, categoryFilter, statusFilter]);
+  }, [filterPosts]);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       const [postsData, catsData] = await Promise.all([
         fetchAllPosts(),
@@ -53,9 +54,9 @@ export default function AllPostsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const filterPosts = () => {
+  const filterPosts = useCallback(() => {
     let filtered = [...posts];
 
     if (searchQuery) {
@@ -76,7 +77,7 @@ export default function AllPostsPage() {
     }
 
     setFilteredPosts(filtered);
-  };
+  }, [posts, searchQuery, categoryFilter, statusFilter]);
 
   const handleDelete = async (slug: string) => {
     if (!confirm('Are you sure you want to delete this post?')) return;
@@ -227,3 +228,5 @@ export default function AllPostsPage() {
     </ProtectedRoute>
   );
 }
+
+export default memo(AllPostsPage);

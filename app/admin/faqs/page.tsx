@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,6 +9,7 @@ import { Plus, Eye, Edit, Trash2, Search, ArrowLeft } from 'lucide-react';
 import AdminNav from '@/components/admin/AdminNav';
 import ProtectedRoute from '@/components/admin/ProtectedRoute';
 import { fetchAllFAQs, deleteFAQ, togglePublishFAQ } from '@/lib/actions';
+import { memo } from 'react';
 
 interface FAQ {
   id: string;
@@ -20,21 +21,13 @@ interface FAQ {
   relatedTo: string;
 }
 
-export default function FAQsPage() {
+function FAQsPage() {
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [filteredFaqs, setFilteredFaqs] = useState<FAQ[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    loadFAQs();
-  }, []);
-
-  useEffect(() => {
-    filterFAQs();
-  }, [faqs, searchQuery]);
-
-  const loadFAQs = async () => {
+  const loadFAQs = useCallback(async () => {
     try {
       const data = await fetchAllFAQs();
       setFaqs(data);
@@ -43,9 +36,9 @@ export default function FAQsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const filterFAQs = () => {
+  const filterFAQs = useCallback(() => {
     let filtered = [...faqs];
 
     if (searchQuery) {
@@ -57,7 +50,15 @@ export default function FAQsPage() {
     }
 
     setFilteredFaqs(filtered);
-  };
+  }, [faqs, searchQuery]);
+
+  useEffect(() => {
+    loadFAQs();
+  }, [loadFAQs]);
+
+  useEffect(() => {
+    filterFAQs();
+  }, [filterFAQs]);
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this FAQ?')) return;
@@ -187,3 +188,5 @@ export default function FAQsPage() {
     </ProtectedRoute>
   );
 }
+
+export default memo(FAQsPage);
