@@ -33,8 +33,13 @@ export default function Footer() {
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-5 gap-6 md:gap-10 items-start">
             <div className="md:col-span-1 order-last md:order-first">
               <div className="mb-4 flex justify-center md:justify-start">
-                {/* Logo removed from footer as requested */}
-                <div aria-hidden className="h-16 w-[160px]"></div>
+                <Image
+                  src="/n.png"
+                  alt="Hexpertify Logo"
+                  width={160}
+                  height={64}
+                  className="h-auto"
+                />
               </div>
 
               <div className="flex justify-center md:justify-start items-center gap-4 mt-3">
