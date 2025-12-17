@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
-import { Twitter, Linkedin, Github, CheckCircle2 } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 
 interface BlogAuthorCardProps {
   author: string;
@@ -17,36 +17,34 @@ interface BlogAuthorCardProps {
 
 export default function BlogAuthorCard({ author, authorBio, authorAvatar, socialLinks }: BlogAuthorCardProps) {
   return (
-    <div className="bg-purple-50/50 rounded-lg p-3 sm:p-4 text-center">
-      <h3 className="text-sm sm:text-base font-bold text-gray-900 mb-2">Know Your Author</h3>
-
-      {authorAvatar ? (
-        <div className="relative w-16 h-16 sm:w-24 sm:h-24 rounded-lg mx-auto mb-2 overflow-hidden">
-          <Image
-            src={authorAvatar}
-            alt={author}
-            fill
-            className="object-cover"
-          />
+    <div className="rounded-lg bg-[#d0bcff] p-3 sm:p-4">
+      <div className="flex items-center gap-3 sm:flex-col sm:text-center">
+        <div className="flex-shrink-0">
+          {authorAvatar ? (
+            <div className="relative h-16 w-24 sm:h-24 sm:w-24 rounded-lg overflow-hidden bg-white/40">
+              <Image src={authorAvatar} alt={author} fill className="object-cover" />
+            </div>
+          ) : (
+            <div className="h-16 w-24 sm:h-24 sm:w-24 rounded-lg bg-white/40 flex items-center justify-center">
+              <span className="text-xl sm:text-3xl font-bold text-gray-900">{author.charAt(0)}</span>
+            </div>
+          )}
         </div>
-      ) : (
-        <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-lg bg-gradient-to-br from-yellow-400 to-yellow-500 mx-auto mb-2 flex items-center justify-center">
-          <span className="text-xl sm:text-3xl font-bold text-gray-900">{author.charAt(0)}</span>
-        </div>
-      )}
 
-      <div className="mb-2">
-        <p className="text-gray-900 font-bold text-sm sm:text-base">{author} <CheckCircle2 className="inline text-blue-500" /></p>
-        {authorBio && (
-          <p className="text-gray-600 text-xs mt-1">{authorBio}</p>
-        )}
+        <div className="flex-1 min-w-0">
+          <h3 className="text-base sm:text-sm font-bold text-gray-900 mb-1">Know your Author</h3>
+          <p className="text-sm sm:text-base font-bold text-gray-900 truncate">
+            {author} <CheckCircle2 className="inline text-blue-500" size={16} />
+          </p>
+          {authorBio && <p className="text-xs text-gray-700 mt-0.5">({authorBio})</p>}
+
+          <div className="mt-2 sm:mt-3">
+            <Button className="w-full rounded-full bg-[#450BC8] hover:bg-[#3709A0] text-white py-2 text-sm font-semibold">
+              Book Consultation
+            </Button>
+          </div>
+        </div>
       </div>
-
-      <Button
-        className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white rounded-full py-2 sm:py-4 text-sm font-semibold shadow-lg hover:shadow-xl transition-all"
-      >
-        Book Consultation
-      </Button>
     </div>
   );
 }

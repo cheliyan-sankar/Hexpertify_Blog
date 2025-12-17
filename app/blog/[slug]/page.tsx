@@ -77,15 +77,15 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 py-8 sm:py-12">
           <div className="order-2 lg:order-1 space-y-4 sm:space-y-6 max-w-sm mx-auto lg:max-w-none lg:mx-0">
-            <BlogAuthorCard
-              author={blog.author}
-              authorBio={blog.authorBio}
-              authorAvatar={blog.authorAvatar}
-              socialLinks={blog.authorSocialLinks}
-            />
             <div className="hidden lg:block">
-              <BlogSubscribe />
+              <BlogAuthorCard
+                author={blog.author}
+                authorBio={blog.authorBio}
+                authorAvatar={blog.authorAvatar}
+                socialLinks={blog.authorSocialLinks}
+              />
             </div>
+            <BlogSubscribe />
           </div>
 
           <div className="order-1 lg:order-2 lg:col-span-3">
@@ -108,7 +108,12 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
             )}
 
             <div className="lg:hidden mb-6 sm:mb-8 max-w-sm mx-auto">
-              <BlogSubscribe />
+              <BlogAuthorCard
+                author={blog.author}
+                authorBio={blog.authorBio}
+                authorAvatar={blog.authorAvatar}
+                socialLinks={blog.authorSocialLinks}
+              />
             </div>
 
             <div className="prose max-w-none">
