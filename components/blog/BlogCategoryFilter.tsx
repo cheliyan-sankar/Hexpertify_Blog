@@ -15,13 +15,15 @@ export default function BlogCategoryFilter({ categories, onCategoryChange }: Blo
     onCategoryChange?.(category);
   };
 
+  const allCategories = categories[0] === 'All' ? categories : ['All', ...categories];
+
   return (
-    <div className="flex flex-wrap gap-4">
-      {categories.map((category) => (
+    <div className="flex gap-4 overflow-x-auto pb-2">
+      {allCategories.map((category) => (
         <button
           key={category}
           onClick={() => handleCategoryClick(category)}
-          className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+          className={`px-3 sm:px-5 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap ${
             selectedCategory === category
               ? 'text-white shadow-md'
               : 'bg-transparent text-gray-600 border border-gray-300'

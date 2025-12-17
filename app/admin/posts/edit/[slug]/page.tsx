@@ -348,7 +348,7 @@ export default function EditPostPage({ params }: { params: { slug: string } }) {
                   ) : (
                     <div className="space-y-3">
                       {tocItems.map((item, index) => (
-                        <div key={item.id} className="flex gap-3 items-start border rounded-lg p-4">
+                        <div key={item.id} className="flex flex-col sm:flex-row gap-3 items-start border rounded-lg p-4">
                           <div className="flex-1 space-y-3">
                             <div className="space-y-2">
                               <Label htmlFor={`toc-title-${item.id}`}>
