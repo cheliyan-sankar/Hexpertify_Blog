@@ -1,23 +1,22 @@
 'use client';
 
+import { useState, useEffect, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+<parameter name="oldString">'use client';
+
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import AdminNav from '@/components/admin/AdminNav';
-import ProtectedRoute from '@/components/admin/ProtectedRoute';
-import { fetchFAQById, updateFAQ, fetchAllPosts } from '@/lib/actions';
-import { ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
+
 
 export default function EditFAQPage({ params }: { params: { id: string } }) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
   const [error, setError] = useState('');
@@ -70,31 +69,30 @@ export default function EditFAQPage({ params }: { params: { id: string } }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
 
-    try {
-      const metadata = {
-        question: formData.question,
-        answer: formData.answer,
-        category: formData.category,
-        order: formData.order,
-        published: formData.published,
-        createdAt: new Date().toISOString(),
-        relatedTo: formData.relatedTo,
-      };
+    startTransition(async () => {
+      try {
+        const metadata = {
+          question: formData.question,
+          answer: formData.answer,
+          category: formData.category,
+          order: formData.order,
+          published: formData.published,
+          createdAt: new Date().toISOString(),
+          relatedTo: formData.relatedTo,
+        };
 
-      const result = await updateFAQ(params.id, metadata);
+        const result = await updateFAQ(params.id, metadata);
 
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to update FAQ');
+        if (!result.success) {
+          throw new Error(result.error || 'Failed to update FAQ');
+        }
+
+        router.push('/admin/faqs');
+      } catch (err: any) {
+        setError(err.message || 'Failed to update FAQ');
       }
-
-      router.push('/admin/faqs');
-    } catch (err: any) {
-      setError(err.message || 'Failed to update FAQ');
-    } finally {
-      setLoading(false);
-    }
+    });
   };
 
   if (fetching) {
@@ -229,10 +227,10 @@ export default function EditFAQPage({ params }: { params: { id: string } }) {
                 <div className="flex gap-4">
                   <Button
                     type="submit"
-                    disabled={loading}
+                    disabled={isPending}
                     style={{ backgroundColor: '#450BC8' }}
                   >
-                    {loading ? 'Updating...' : 'Update FAQ'}
+                    {isPending ? 'Updating...' : 'Update FAQ'}
                   </Button>
                   <Button
                     type="button"

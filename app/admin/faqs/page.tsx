@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useTransition } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,6 +25,7 @@ function FAQsPage() {
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [filteredFaqs, setFilteredFaqs] = useState<FAQ[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isPending, startTransition] = useTransition();
   const [searchQuery, setSearchQuery] = useState('');
 
   const loadFAQs = useCallback(async () => {
@@ -63,21 +64,25 @@ function FAQsPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this FAQ?')) return;
 
-    try {
-      await deleteFAQ(id);
-      loadFAQs();
-    } catch (error) {
-      console.error('Error deleting FAQ:', error);
-    }
+    startTransition(async () => {
+      try {
+        await deleteFAQ(id);
+        loadFAQs();
+      } catch (error) {
+        console.error('Error deleting FAQ:', error);
+      }
+    });
   };
 
   const togglePublish = async (id: string) => {
-    try {
-      await togglePublishFAQ(id);
-      loadFAQs();
-    } catch (error) {
-      console.error('Error updating FAQ:', error);
-    }
+    startTransition(async () => {
+      try {
+        await togglePublishFAQ(id);
+        loadFAQs();
+      } catch (error) {
+        console.error('Error updating FAQ:', error);
+      }
+    });
   };
 
   return (
@@ -161,11 +166,12 @@ function FAQsPage() {
                           size="sm"
                           onClick={() => togglePublish(faq.id)}
                           title={faq.published ? 'Unpublish' : 'Publish'}
+                          disabled={isPending}
                         >
                           <Eye size={16} />
                         </Button>
                         <Link href={`/admin/faqs/edit/${faq.id}`}>
-                          <Button variant="outline" size="sm">
+                          <Button variant="outline" size="sm" disabled={isPending}>
                             <Edit size={16} />
                           </Button>
                         </Link>
@@ -173,6 +179,7 @@ function FAQsPage() {
                           variant="outline"
                           size="sm"
                           onClick={() => handleDelete(faq.id)}
+                          disabled={isPending}
                         >
                           <Trash2 size={16} className="text-red-500" />
                         </Button>

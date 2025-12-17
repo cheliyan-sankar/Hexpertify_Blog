@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,6 +25,7 @@ interface TOCItem {
 
 export default function EditPostPage({ params }: { params: { slug: string } }) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
   const [error, setError] = useState('');
@@ -113,42 +114,41 @@ export default function EditPostPage({ params }: { params: { slug: string } }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
 
-    try {
-      const metadata = {
-        title: formData.title,
-        slug: formData.slug,
-        description: formData.description,
-        author: formData.author,
-        authorBio: formData.authorBio,
-        authorAvatar: formData.authorAvatar,
-        authorConsultationUrl: formData.authorConsultationUrl,
-        authorSocialLinks: {
-          twitter: formData.authorTwitter,
-          linkedin: formData.authorLinkedin,
-          github: formData.authorGithub,
-        },
-        category: formData.category,
-        imageUrl: formData.imageUrl,
-        readTime: formData.readTime,
-        published: formData.published,
-        date: new Date().toISOString(),
-        tableOfContents: tocItems,
-      };
+    startTransition(async () => {
+      try {
+        const metadata = {
+          title: formData.title,
+          slug: formData.slug,
+          description: formData.description,
+          author: formData.author,
+          authorBio: formData.authorBio,
+          authorAvatar: formData.authorAvatar,
+          authorConsultationUrl: formData.authorConsultationUrl,
+          authorSocialLinks: {
+            twitter: formData.authorTwitter,
+            linkedin: formData.authorLinkedin,
+            github: formData.authorGithub,
+          },
+          category: formData.category,
+          imageUrl: formData.imageUrl,
+          readTime: formData.readTime,
+          published: formData.published,
+          date: new Date().toISOString(),
+          tableOfContents: tocItems,
+        };
 
-      const result = await updatePost(originalSlug, metadata, formData.content);
+        const result = await updatePost(originalSlug, metadata, formData.content);
 
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to update post');
+        if (!result.success) {
+          throw new Error(result.error || 'Failed to update post');
+        }
+
+        router.push('/admin/dashboard');
+      } catch (err: any) {
+        setError(err.message || 'Failed to update post');
       }
-
-      router.push('/admin/dashboard');
-    } catch (err: any) {
-      setError(err.message || 'Failed to update post');
-    } finally {
-      setLoading(false);
-    }
+    });
   };
 
   if (fetching) {
@@ -438,10 +438,10 @@ export default function EditPostPage({ params }: { params: { slug: string } }) {
                 <div className="flex gap-4">
                   <Button
                     type="submit"
-                    disabled={loading}
+                    disabled={isPending}
                     style={{ backgroundColor: '#450BC8' }}
                   >
-                    {loading ? 'Updating...' : 'Update Post'}
+                    {isPending ? 'Updating...' : 'Update Post'}
                   </Button>
                   <Button
                     type="button"

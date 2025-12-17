@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,6 +18,7 @@ import Link from 'next/link';
 
 export default function NewFAQPage() {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [blogSlugs, setBlogSlugs] = useState<string[]>([]);
@@ -54,33 +55,32 @@ export default function NewFAQPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
 
-    try {
-      const id = generateId(formData.question);
+    startTransition(async () => {
+      try {
+        const id = generateId(formData.question);
 
-      const metadata = {
-        question: formData.question,
-        answer: formData.answer,
-        category: formData.category,
-        order: formData.order,
-        published: formData.published,
-        createdAt: new Date().toISOString(),
-        relatedTo: formData.relatedTo,
-      };
+        const metadata = {
+          question: formData.question,
+          answer: formData.answer,
+          category: formData.category,
+          order: formData.order,
+          published: formData.published,
+          createdAt: new Date().toISOString(),
+          relatedTo: formData.relatedTo,
+        };
 
-      const result = await createFAQ(id, metadata);
+        const result = await createFAQ(id, metadata);
 
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to create FAQ');
+        if (!result.success) {
+          throw new Error(result.error || 'Failed to create FAQ');
+        }
+
+        router.push('/admin/faqs');
+      } catch (err: any) {
+        setError(err.message || 'Failed to create FAQ');
       }
-
-      router.push('/admin/faqs');
-    } catch (err: any) {
-      setError(err.message || 'Failed to create FAQ');
-    } finally {
-      setLoading(false);
-    }
+    });
   };
 
   return (
@@ -202,10 +202,10 @@ export default function NewFAQPage() {
                 <div className="flex gap-4">
                   <Button
                     type="submit"
-                    disabled={loading}
+                    disabled={isPending}
                     style={{ backgroundColor: '#450BC8' }}
                   >
-                    {loading ? 'Creating...' : 'Create FAQ'}
+                    {isPending ? 'Creating...' : 'Create FAQ'}
                   </Button>
                   <Button
                     type="button"

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useTransition } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -29,6 +29,7 @@ function AllPostsPage() {
   const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isPending, startTransition] = useTransition();
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
@@ -82,21 +83,25 @@ function AllPostsPage() {
   const handleDelete = async (slug: string) => {
     if (!confirm('Are you sure you want to delete this post?')) return;
 
-    try {
-      await deletePost(slug);
-      loadData();
-    } catch (error) {
-      console.error('Error deleting post:', error);
-    }
+    startTransition(async () => {
+      try {
+        await deletePost(slug);
+        loadData();
+      } catch (error) {
+        console.error('Error deleting post:', error);
+      }
+    });
   };
 
   const togglePublish = async (slug: string) => {
-    try {
-      await togglePublishPost(slug);
-      loadData();
-    } catch (error) {
-      console.error('Error updating post:', error);
-    }
+    startTransition(async () => {
+      try {
+        await togglePublishPost(slug);
+        loadData();
+      } catch (error) {
+        console.error('Error updating post:', error);
+      }
+    });
   };
 
   return (
@@ -201,11 +206,12 @@ function AllPostsPage() {
                           size="sm"
                           onClick={() => togglePublish(post.slug)}
                           title={post.published ? 'Unpublish' : 'Publish'}
+                          disabled={isPending}
                         >
                           <Eye size={16} />
                         </Button>
                         <Link href={`/admin/posts/edit/${post.slug}`}>
-                          <Button variant="outline" size="sm">
+                          <Button variant="outline" size="sm" disabled={isPending}>
                             <Edit size={16} />
                           </Button>
                         </Link>
@@ -213,6 +219,7 @@ function AllPostsPage() {
                           variant="outline"
                           size="sm"
                           onClick={() => handleDelete(post.slug)}
+                          disabled={isPending}
                         >
                           <Trash2 size={16} className="text-red-500" />
                         </Button>

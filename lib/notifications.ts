@@ -1,9 +1,15 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+function getSupabaseAdmin() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
+  if (!supabaseUrl || !serviceRoleKey) {
+    return null;
+  }
+
+  return createClient(supabaseUrl, serviceRoleKey);
+}
 
 export async function enqueueNotification(data: {
   post_slug: string;
@@ -12,6 +18,13 @@ export async function enqueueNotification(data: {
   payload?: any;
   scheduled_at?: string | null;
 }) {
+  const supabaseAdmin = getSupabaseAdmin();
+  if (!supabaseAdmin) {
+    // Notifications are an optional integration.
+    // When Supabase is not configured, treat enqueue as a no-op.
+    return null;
+  }
+
   const record = {
     post_slug: data.post_slug,
     title: data.title || null,
@@ -28,6 +41,11 @@ export async function enqueueNotification(data: {
 }
 
 export async function fetchPendingNotifications(limit = 10) {
+  const supabaseAdmin = getSupabaseAdmin();
+  if (!supabaseAdmin) {
+    return [];
+  }
+
   const { data, error } = await supabaseAdmin
     .from('notifications')
     .select('*')
@@ -39,6 +57,11 @@ export async function fetchPendingNotifications(limit = 10) {
 }
 
 export async function markNotificationStatus(id: string, status: string, opts?: { last_error?: string }) {
+  const supabaseAdmin = getSupabaseAdmin();
+  if (!supabaseAdmin) {
+    return null;
+  }
+
   const { last_error } = opts || {};
   const { data, error } = await supabaseAdmin
     .from('notifications')

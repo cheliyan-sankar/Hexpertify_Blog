@@ -64,6 +64,7 @@ export default function Home() {
     description: allPosts[0].description,
     date: new Date(allPosts[0].date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
     imageUrl: allPosts[0].imageUrl,
+    author: allPosts[0].author,
   } : null;
 
   const topReads = allPosts.slice(0, 3).map((post, index) => ({
@@ -86,6 +87,7 @@ export default function Home() {
       description: post.description,
       date: new Date(post.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
       imageUrl: post.imageUrl,
+      author: post.author,
     }));
 
   if (loading) {
@@ -151,7 +153,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-16">
             {blogPosts.length > 0 ? (
               blogPosts.map((post) => (
-                <BlogGridCard key={post.id} title={post.title} description={post.description} date={post.date} imageUrl={post.imageUrl} slug={post.slug} />
+                <BlogGridCard key={post.id} title={post.title} description={post.description} date={post.date} imageUrl={post.imageUrl} author={post.author} slug={post.slug} />
               ))
             ) : (
               <div className="col-span-3 text-center py-12 text-gray-500">

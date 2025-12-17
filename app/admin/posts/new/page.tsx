@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,6 +25,7 @@ interface TOCItem {
 
 export default function NewPostPage() {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [categories, setCategories] = useState<string[]>([]);
@@ -96,42 +97,41 @@ export default function NewPostPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
 
-    try {
-      const metadata = {
-        title: formData.title,
-        slug: formData.slug,
-        description: formData.description,
-        author: formData.author,
-        authorBio: formData.authorBio,
-        authorAvatar: formData.authorAvatar,
-        authorConsultationUrl: formData.authorConsultationUrl,
-        authorSocialLinks: {
-          twitter: formData.authorTwitter,
-          linkedin: formData.authorLinkedin,
-          github: formData.authorGithub,
-        },
-        category: formData.category,
-        imageUrl: formData.imageUrl,
-        readTime: formData.readTime,
-        published: formData.published,
-        date: new Date().toISOString(),
-        tableOfContents: tocItems,
-      };
+    startTransition(async () => {
+      try {
+        const metadata = {
+          title: formData.title,
+          slug: formData.slug,
+          description: formData.description,
+          author: formData.author,
+          authorBio: formData.authorBio,
+          authorAvatar: formData.authorAvatar,
+          authorConsultationUrl: formData.authorConsultationUrl,
+          authorSocialLinks: {
+            twitter: formData.authorTwitter,
+            linkedin: formData.authorLinkedin,
+            github: formData.authorGithub,
+          },
+          category: formData.category,
+          imageUrl: formData.imageUrl,
+          readTime: formData.readTime,
+          published: formData.published,
+          date: new Date().toISOString(),
+          tableOfContents: tocItems,
+        };
 
-      const result = await createPost(metadata, formData.content);
+        const result = await createPost(metadata, formData.content);
 
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to create post');
+        if (!result.success) {
+          throw new Error(result.error || 'Failed to create post');
+        }
+
+        router.push('/admin/dashboard');
+      } catch (err: any) {
+        setError(err.message || 'Failed to create post');
       }
-
-      router.push('/admin/dashboard');
-    } catch (err: any) {
-      setError(err.message || 'Failed to create post');
-    } finally {
-      setLoading(false);
-    }
+    });
   };
 
   return (
@@ -411,10 +411,10 @@ export default function NewPostPage() {
                 <div className="flex gap-4">
                   <Button
                     type="submit"
-                    disabled={loading}
+                    disabled={isPending}
                     style={{ backgroundColor: '#450BC8' }}
                   >
-                    {loading ? 'Creating...' : 'Create Post'}
+                    {isPending ? 'Creating...' : 'Create Post'}
                   </Button>
                   <Button
                     type="button"
