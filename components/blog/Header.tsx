@@ -48,7 +48,7 @@ export default function Header() {
               </Link>
             ))}
             <Link
-              href="/login"
+              href="https://hexpertify.vercel.app/login"
               className="text-white px-6 py-2 rounded-full transition-colors text-sm font-medium"
               style={{ backgroundColor: '#450BC8', transition: 'background-color 0.2s' }}
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#3709A0')}
@@ -83,7 +83,7 @@ export default function Header() {
                 </Link>
               ))}
               <Link
-                href="/login"
+                href="https://hexpertify.vercel.app/login"
                 className="text-white px-6 py-2 rounded-full transition-colors text-sm font-medium text-center"
                 style={{ backgroundColor: '#450BC8', transition: 'background-color 0.2s' }}
                 onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#3709A0')}
