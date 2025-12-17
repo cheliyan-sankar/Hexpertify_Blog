@@ -143,7 +143,7 @@ export default function Footer() {
       <div className="bg-[#450BC8]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
+            <div className="hidden sm:flex items-center gap-4">
               <Image src="/n.png" alt="Hexpertify Logo" width={140} height={56} />
             </div>
             <p className="text-sm text-white text-center sm:text-right">© {new Date().getFullYear()} Hexpertify. All rights reserved.</p>
