@@ -9,11 +9,12 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { label: 'Home', href: '/' },
-    { label: 'My Profile', href: '/profile' },
+    { label: 'Home', href: 'https://hexpertify.vercel.app/' },
+    { label: 'My Profile', href: 'https://hexpertify.vercel.app/profile' },
     { label: 'Blog', href: '/blog' },
-    { label: 'Services', href: '/services' },
-    { label: 'About Us', href: '/about' },
+    { label: 'Services', href: 'https://hexpertify.vercel.app/#categories' },
+    { label: 'About Us', href: 'https://hexpertify.vercel.app/about-us' },
+    { label: 'Contact Us', href: 'https://hexpertify.vercel.app/contact-us' },
   ];
 
   return (
@@ -38,7 +39,7 @@ export default function Header() {
               <Link
                 key={item.label}
                 href={item.href}
-                className="text-gray-700 transition-colors text-sm font-medium"
+                className="text-gray-700 transition-colors text-sm font-bold"
                 style={{ transition: 'color 0.2s' }}
                 onMouseEnter={(e) => (e.currentTarget.style.color = '#450BC8')}
                 onMouseLeave={(e) => (e.currentTarget.style.color = '')}
@@ -72,7 +73,7 @@ export default function Header() {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="text-gray-700 transition-colors text-sm font-medium"
+                  className="text-gray-700 transition-colors text-sm font-bold"
                   style={{ transition: 'color 0.2s' }}
                   onMouseEnter={(e) => (e.currentTarget.style.color = '#450BC8')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = '')}

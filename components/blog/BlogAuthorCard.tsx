@@ -19,7 +19,7 @@ interface BlogAuthorCardProps {
 
 export default function BlogAuthorCard({ author, authorBio, authorAvatar, authorConsultationUrl, socialLinks }: BlogAuthorCardProps) {
   return (
-    <div className="rounded-lg bg-[#d0bcff] p-3 sm:p-4">
+    <div className="rounded-lg bg-[#A687EF] p-3 sm:p-4">
       <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-3 text-center">Know your Author</h3>
       <div className="flex items-center gap-3 sm:flex-col sm:text-center">
         <div className="flex-shrink-0">
