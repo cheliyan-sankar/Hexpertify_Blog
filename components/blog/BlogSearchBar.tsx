@@ -36,8 +36,10 @@ export default function BlogSearchBar({ placeholder = 'Search Blogs', onSearch }
         style={{ transition: 'color 0.2s' }}
         onMouseEnter={(e) => (e.currentTarget.style.color = '#450BC8')}
         onMouseLeave={(e) => (e.currentTarget.style.color = '')}
+        aria-label={placeholder ?? 'Search'}
+        title={placeholder ?? 'Search'}
       >
-        <Search size={20} />
+        <Search size={20} aria-hidden="true" />
       </button>
     </form>
   );

@@ -20,6 +20,16 @@ export default function Home() {
   const [faqs, setFaqs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://hexpertify-blog-sigma.vercel.app';
+
+  const pageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    url: SITE_URL,
+    name: 'Hexpertify Blog',
+    description: 'Connect with certified experts across AI, Cloud Computing, Mental Health, Fitness, and Career Development.',
+  };
+
   useEffect(() => {
     loadData();
   }, []);
@@ -108,6 +118,8 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
+
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pageSchema) }} />
 
       <main>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">

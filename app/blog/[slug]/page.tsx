@@ -11,6 +11,8 @@ import { getPostBySlug } from '@/lib/mdx';
 import { getFAQsByPage } from '@/lib/faqs';
 import SEOHead from '@/components/SEOHead';
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://hexpertify-blog-sigma.vercel.app';
+
 interface TOCItem {
   id: number;
   title: string;
@@ -33,6 +35,7 @@ async function getBlogData(slug: string) {
     authorSocialLinks: post.authorSocialLinks || {},
     tableOfContents: (post.tableOfContents || []) as TOCItem[],
     date: new Date(post.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+    rawDate: post.date,
     readTime: post.readTime,
     imageUrl: post.imageUrl,
     category: post.category,
@@ -60,10 +63,42 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     ...seo,
     alternates: {
-      canonical: `https://hexpertify.com/blog/${slug}`,
+      canonical: `${SITE_URL}/blog/${slug}`,
     },
   };
 }
+
+import Schema from '@/components/Schema';
+
+function buildArticleSchema(blog: any) {
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://hexpertify-blog-sigma.vercel.app';
+  const url = `${SITE_URL}/blog/${blog.slug}`;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': url,
+    },
+    headline: blog.title,
+    description: blog.description,
+    image: blog.imageUrl ? [blog.imageUrl] : [],
+    datePublished: blog.rawDate ? new Date(blog.rawDate).toISOString() : new Date().toISOString(),
+    author: {
+      '@type': 'Person',
+      name: blog.author,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Hexpertify',
+      logo: {
+        '@type': 'ImageObject',
+        url: `${SITE_URL}/assets/logo.png`,
+      },
+    },
+  };
+}
+
 
 export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -84,6 +119,8 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
+
+      <Schema value={buildArticleSchema(blog)} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <BlogDetailHero blog={blog} />

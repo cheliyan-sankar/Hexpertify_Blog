@@ -6,6 +6,8 @@ import SEOHead from '@/components/SEOHead';
 
 const inter = Inter({ subsets: ['latin'] });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://hexpertify-blog-sigma.vercel.app';
+
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await SEOHead({
     page: 'homepage',
@@ -16,22 +18,44 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     ...seo,
     alternates: {
-      canonical: 'https://hexpertify.com',
+      canonical: SITE_URL,
     },
   };
 }
+
+import Schema from '@/components/Schema';
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const siteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Hexpertify',
+    url: SITE_URL,
+    description: 'Connect with certified experts across AI, Cloud Computing, Mental Health, Fitness, and Career Development.',
+    publisher: {
+      '@type': 'Organization',
+      name: 'Hexpertify',
+      url: SITE_URL,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${SITE_URL}/assets/logo.png`,
+      },
+    },
+  };
+
   return (
     <html lang="en">
       <body className={inter.className}>
+        <Schema value={siteSchema} />
         {children}
         <Footer />
       </body>
     </html>
   );
 }
+
+
