@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Bold, Italic, Heading, List, Link, Image as ImageIcon, Code } from 'lucide-react';
+import { Bold, Italic, Heading, List, Link, Image as ImageIcon, Code, Upload } from 'lucide-react';
+import { put } from '@vercel/blob';
 
 interface MDXEditorProps {
   value: string;
@@ -13,6 +14,45 @@ interface MDXEditorProps {
 
 export default function MDXEditor({ value, onChange }: MDXEditorProps) {
   const [activeTab, setActiveTab] = useState('edit');
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageUpload = async (file: File) => {
+    setUploading(true);
+    try {
+      const blob = await put(`blog-images/${Date.now()}-${file.name}`, file, {
+        access: 'public',
+      });
+      return blob.url;
+    } catch (error) {
+      console.error('Image upload failed:', error);
+      throw new Error('Failed to upload image');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const insertImage = async () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        const url = await handleImageUpload(file);
+        insertMarkdown('image', url);
+      } catch (error) {
+        alert('Failed to upload image. Please try again.');
+      }
+    }
+    // Reset the input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   const insertMarkdown = (syntax: string, placeholder: string = '') => {
     const textarea = document.getElementById('mdx-editor') as HTMLTextAreaElement;
@@ -124,10 +164,11 @@ export default function MDXEditor({ value, onChange }: MDXEditorProps) {
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => insertMarkdown('image')}
-              title="Image"
+              onClick={insertImage}
+              disabled={uploading}
+              title="Upload Image"
             >
-              <ImageIcon size={16} />
+              {uploading ? <Upload size={16} className="animate-spin" /> : <ImageIcon size={16} />}
             </Button>
             <Button
               type="button"
@@ -184,6 +225,13 @@ export default function MDXEditor({ value, onChange }: MDXEditorProps) {
           <li>`code` for inline code</li>
         </ul>
       </div>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={onFileChange}
+        style={{ display: 'none' }}
+      />
     </div>
   );
 }
