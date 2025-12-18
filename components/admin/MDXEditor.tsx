@@ -5,7 +5,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Bold, Italic, Heading, List, Link, Image as ImageIcon, Code, Upload } from 'lucide-react';
-import { put } from '@vercel/blob';
 
 interface MDXEditorProps {
   value: string;
@@ -20,20 +19,26 @@ export default function MDXEditor({ value, onChange }: MDXEditorProps) {
   const handleImageUpload = async (file: File) => {
     setUploading(true);
     try {
-      // Check if we're in a Vercel environment
-      if (process.env.VERCEL || process.env.NEXT_PUBLIC_VERCEL_ENV) {
-        const blob = await put(`blog-images/${Date.now()}-${file.name}`, file, {
-          access: 'public',
-        });
-        return blob.url;
-      } else {
-        // For local development, show a message
-        alert('Image upload is only available when deployed on Vercel. For development testing, use the manual image insertion with external URLs.');
-        throw new Error('Image upload not available in development');
+      // Use server-side upload endpoint which securely uses Vercel Blob
+      const formData = new FormData();
+      formData.append('file', file, file.name);
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error('Upload response error:', data);
+        throw new Error(data?.error || 'Upload failed');
       }
-    } catch (error) {
+
+      return data.url as string;
+    } catch (error: any) {
       console.error('Image upload failed:', error);
-      throw new Error('Failed to upload image');
+      throw new Error(error?.message || 'Failed to upload image');
     } finally {
       setUploading(false);
     }
