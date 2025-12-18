@@ -49,7 +49,7 @@ export default function Footer() {
                   <div className="mt-3 flex justify-center">
                     <div className="w-full flex justify-center items-center gap-4">
                       <Link
-                        href="https://instagram.com"
+                        href="https://www.instagram.com/hexpertify"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-white hover:opacity-80 transition-opacity"
@@ -58,7 +58,7 @@ export default function Footer() {
                         <Instagram size={22} />
                       </Link>
                       <Link
-                        href="https://twitter.com"
+                        href="https://x.com/hexpertifyapp"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-white hover:opacity-80 transition-opacity"
@@ -67,7 +67,7 @@ export default function Footer() {
                         <Twitter size={22} />
                       </Link>
                       <Link
-                        href="https://linkedin.com"
+                        href="https://www.linkedin.com/company/hexpertify"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-white hover:opacity-80 transition-opacity"
