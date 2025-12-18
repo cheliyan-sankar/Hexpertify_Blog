@@ -136,6 +136,7 @@ function AdminDashboard() {
                         <Image
                           src={post.imageUrl}
                           alt={post.title}
+                          title={post.title}
                           fill
                           className="object-cover"
                         />

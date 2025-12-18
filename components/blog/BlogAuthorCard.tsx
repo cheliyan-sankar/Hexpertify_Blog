@@ -26,7 +26,7 @@ export default function BlogAuthorCard({ author, authorBio, authorAvatar, author
         <div className="flex-shrink-0">
           {authorAvatar ? (
             <div className="relative h-36 w-24 rounded-lg overflow-hidden bg-white/40 flex-shrink-0">
-              <Image src={authorAvatar} alt={author} fill className="object-cover" />
+              <Image src={authorAvatar} alt={author} title={author} fill className="object-cover" />
             </div>
           ) : (
             <div className="h-36 w-24 rounded-lg bg-white/40 flex items-center justify-center">

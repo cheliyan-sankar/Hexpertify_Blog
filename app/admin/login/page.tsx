@@ -44,6 +44,7 @@ export default function AdminLoginPage() {
             <Image
               src="/purple_logo.jpeg"
               alt="Hexpertify Logo"
+              title="Hexpertify Logo"
               width={314}
               height={80}
               className="h-12 w-auto"

@@ -193,6 +193,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
                         <Image
                           src={src || ''}
                           alt={alt || 'Blog image'}
+                          title={alt || 'Blog image'}
                           width={800}
                           height={400}
                           className="rounded-lg w-full h-auto"

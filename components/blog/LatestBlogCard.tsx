@@ -18,6 +18,7 @@ export default function LatestBlogCard({ title, description, date, imageUrl, aut
         <Image
           src={imageUrl}
           alt={title}
+          title={title}
           fill
           className="object-cover"
         />

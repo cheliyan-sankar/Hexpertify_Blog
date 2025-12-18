@@ -49,6 +49,7 @@ export default function BlogDetailHero({ blog }: BlogDetailHeroProps) {
         <Image
           src={blog.imageUrl}
           alt={blog.title}
+          title={blog.title}
           width={800}
           height={200}
           className="w-full h-auto object-cover"

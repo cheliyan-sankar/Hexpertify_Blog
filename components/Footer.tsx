@@ -41,6 +41,7 @@ export default function Footer() {
                   <Image
                     src="/n.png"
                     alt="Hexpertify Logo"
+                    title="Hexpertify Logo"
                     width={160}
                     height={64}
                     className="h-auto mx-auto md:mx-0"

@@ -16,6 +16,7 @@ export default function TopReadsCard({ title, date, imageUrl, slug }: TopReadsCa
           <Image
             src={imageUrl}
             alt={title}
+            title={title}
             fill
             className="object-cover rounded"
           />

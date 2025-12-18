@@ -18,6 +18,7 @@ export default function BlogGridCard({ title, description, date, imageUrl, autho
         <Image
           src={imageUrl}
           alt={title}
+          title={title}
           fill
           className="object-cover"
         />

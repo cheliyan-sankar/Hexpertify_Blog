@@ -24,6 +24,7 @@ export default function AdminNav() {
               <Image
                 src="/purple_logo.jpeg"
                 alt="Hexpertify Logo"
+                title="Hexpertify Logo"
                 width={314}
                 height={80}
                 className="h-16 w-auto cursor-pointer"

@@ -12,6 +12,7 @@ export default function Header() {
             <Image
               src="/blog.jpeg"
               alt="Blogs by Certified Experts"
+              title="Blogs by Certified Experts"
               width={654}
               height={382}
               className="h-16 w-auto cursor-pointer"

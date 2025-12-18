@@ -183,7 +183,7 @@ function AllPostsPage() {
                       className="flex items-center gap-4 p-4 border rounded-lg hover:bg-gray-50 transition-colors"
                     >
                       <div className="relative w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-gray-200">
-                        <Image src={post.imageUrl} alt={post.title} fill className="object-cover" />
+                        <Image src={post.imageUrl} alt={post.title} title={post.title} fill className="object-cover" />
                       </div>
 
                       <div className="flex-1 min-w-0">
