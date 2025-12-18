@@ -29,6 +29,20 @@ export default function MDXEditor({ value, onChange }: MDXEditorProps) {
       const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
       const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
 
+      // helper to safely parse response (JSON or plain text)
+      const parseResponse = async (res: Response) => {
+        try {
+          return await res.json();
+        } catch (err) {
+          try {
+            const txt = await res.text();
+            return { __text: txt };
+          } catch (e) {
+            return null;
+          }
+        }
+      };
+
       if (cloudName && uploadPreset) {
         const form = new FormData();
         form.append('file', file);
@@ -36,14 +50,15 @@ export default function MDXEditor({ value, onChange }: MDXEditorProps) {
 
         const url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
         const res = await fetch(url, { method: 'POST', body: form });
-        const json = await res.json();
+        const json = await parseResponse(res);
 
         if (!res.ok) {
-          console.error('Cloudinary upload error:', json);
-          throw new Error(json.error?.message || 'Cloudinary upload failed');
+          const errMsg = json?.error?.message || json?.error || json?.__text || 'Cloudinary upload failed';
+          console.error('Cloudinary upload error:', errMsg, json);
+          throw new Error(errMsg);
         }
 
-        return json.secure_url as string;
+        return json?.secure_url as string;
       }
 
       // Fallback to server-side upload endpoint
@@ -55,11 +70,12 @@ export default function MDXEditor({ value, onChange }: MDXEditorProps) {
         body: formData,
       });
 
-      const data = await res.json();
+      const data = await parseResponse(res);
 
       if (!res.ok) {
-        console.error('Upload response error:', data);
-        throw new Error(data?.error || 'Upload failed');
+        const errMsg = data?.error || data?.message || data?.__text || 'Upload failed';
+        console.error('Upload response error:', errMsg, data);
+        throw new Error(errMsg);
       }
 
       return data.url as string;
