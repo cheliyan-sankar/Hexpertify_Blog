@@ -12,7 +12,13 @@ function getBlobToken(): string | undefined {
 
 export async function POST(req: Request) {
   try {
-    const token = getBlobToken();
+    // Accept token from environment or Authorization header for testing
+    let token = getBlobToken();
+    const authHeader = (req.headers && (req as any).headers?.get)
+      ? (req as any).headers.get('authorization')
+      : (req as any).headers?.authorization || '';
+    const bearer = authHeader?.toString?.().startsWith('Bearer ') ? authHeader.split(' ')[1] : undefined;
+    if (bearer) token = bearer;
     if (!token) {
       const message =
         'Vercel Blob token not configured. Create a token in Vercel (Account → Tokens) and add it to Project Settings as `VERCEL_BLOB_TOKEN`. See https://vercel.com/docs/storage/blob#using-the-api';
