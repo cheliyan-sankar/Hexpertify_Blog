@@ -19,7 +19,28 @@ export default function MDXEditor({ value, onChange }: MDXEditorProps) {
   const handleImageUpload = async (file: File) => {
     setUploading(true);
     try {
-      // Use server-side upload endpoint which securely uses Vercel Blob
+      // If Cloudinary unsigned is configured, upload directly from client (no token)
+      const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+      const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+
+      if (cloudName && uploadPreset) {
+        const form = new FormData();
+        form.append('file', file);
+        form.append('upload_preset', uploadPreset);
+
+        const url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
+        const res = await fetch(url, { method: 'POST', body: form });
+        const json = await res.json();
+
+        if (!res.ok) {
+          console.error('Cloudinary upload error:', json);
+          throw new Error(json.error?.message || 'Cloudinary upload failed');
+        }
+
+        return json.secure_url as string;
+      }
+
+      // Fallback to server-side upload endpoint
       const formData = new FormData();
       formData.append('file', file, file.name);
 
