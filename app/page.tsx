@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Header from '@/components/blog/Header';
 import SectionHeader from '@/components/blog/SectionHeader';
 import LatestBlogCard from '@/components/blog/LatestBlogCard';
@@ -112,15 +111,18 @@ export default function Home() {
 
       <main>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-          <div className="flex justify-center mb-12">
-            <Image
-              src="/blog.jpeg"
-              alt="Blogs by Certified Experts"
-              width={400}
-              height={150}
-              className="h-24 w-auto"
-              priority
-            />
+          <div className="text-center mb-12">
+            <h1 className="font-extrabold tracking-tight leading-snug">
+              <span className="block text-4xl sm:text-5xl md:text-6xl bg-gradient-to-r from-purple-700 via-purple-600 to-purple-400 bg-clip-text text-transparent">
+                Blogs by
+              </span>
+              <span className="block mt-1 sm:mt-2 text-4xl sm:text-5xl md:text-6xl bg-gradient-to-r from-purple-700 via-purple-600 to-purple-400 bg-clip-text text-transparent">
+                Certified Experts
+              </span>
+            </h1>
+            <p className="mt-4 text-base sm:text-lg text-gray-600 max-w-3xl mx-auto">
+              Connect with certified experts across AI, Cloud Computing, Mental Health, Fitness, and Career Development.
+            </p>
           </div>
 
           {latestBlog && (

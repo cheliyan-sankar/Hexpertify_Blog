@@ -10,7 +10,7 @@ interface TopReadsCardProps {
 
 export default function TopReadsCard({ title, date, imageUrl, slug }: TopReadsCardProps) {
   return (
-    <Link href={`/blog/${slug}`}>
+    <Link href={`/blog/${slug}`} className="block">
       <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer flex gap-4 p-4">
         <div className="relative w-24 h-24 flex-shrink-0 bg-gray-200 rounded">
           <Image

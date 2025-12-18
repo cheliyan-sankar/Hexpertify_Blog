@@ -16,7 +16,7 @@ interface BlogDetailHeroProps {
 
 export default function BlogDetailHero({ blog }: BlogDetailHeroProps) {
   return (
-    <div className="py-6 sm:py-8">
+    <div className="pt-2 pb-6 sm:pt-3 sm:pb-8">
       <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-gray-600 mb-6">
         <Link href="/" className="hover:text-gray-900">
           Home
