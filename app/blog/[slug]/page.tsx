@@ -134,11 +134,32 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
     );
   }
 
+  const faqSchema = faqs.length
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqs.map((faq) => ({
+          '@type': 'Question',
+          name: faq.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: faq.answer,
+          },
+        })),
+      }
+    : null;
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
 
-      <Schema value={buildArticleSchema(blog)} />
+      <Schema
+        value={
+          faqSchema
+            ? [buildArticleSchema(blog), faqSchema]
+            : buildArticleSchema(blog)
+        }
+      />
 
       <main className="max-w-7xl mx-auto section-padding-y">
         <div className="page-padding">
@@ -173,12 +194,6 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
                 authorConsultationUrl={blog.authorConsultationUrl}
                 socialLinks={blog.authorSocialLinks}
               />
-            </div>
-
-            {/* Mobile subscribe + related blogs directly under author card */}
-            <div className="lg:hidden mb-6 sm:mb-8 max-w-sm mx-auto space-y-4">
-              <BlogSubscribe />
-              <RelatedPostsSidebar posts={blog.relatedPosts} />
             </div>
 
             {blog.tableOfContents.length > 0 && (
@@ -263,6 +278,12 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
                   {blog.content}
                 </ReactMarkdown>
               </div>
+            </div>
+
+            {/* Mobile subscribe + related blogs below content */}
+            <div className="lg:hidden mt-8 mb-6 sm:mb-8 max-w-sm mx-auto space-y-4">
+              <BlogSubscribe />
+              <RelatedPostsSidebar posts={blog.relatedPosts} />
             </div>
           </div>
         </div>

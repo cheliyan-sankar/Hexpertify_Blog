@@ -11,6 +11,8 @@ import BlogGridCard from '@/components/blog/BlogGridCard';
 import FAQSection from '@/components/FAQSection';
 import { fetchAllPosts, fetchAllCategories, fetchFAQsByPage } from '@/lib/actions';
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://hexpertify-blog-sigma.vercel.app';
+
 export default function Home() {
   const [allPosts, setAllPosts] = useState<any[]>([]);
   const [filteredPosts, setFilteredPosts] = useState<any[]>([]);
@@ -19,16 +21,6 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [faqs, setFaqs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-
-  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://hexpertify-blog-sigma.vercel.app';
-
-  const pageSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'WebPage',
-    url: SITE_URL,
-    name: 'Hexpertify Blog',
-    description: 'Connect with certified experts across AI, Cloud Computing, Mental Health, Fitness, and Career Development.',
-  };
 
   useEffect(() => {
     loadData();
@@ -116,11 +108,67 @@ export default function Home() {
     );
   }
 
+  const webPageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    url: SITE_URL,
+    name: 'Hexpertify Blog',
+    description:
+      'Connect with certified experts across AI, Cloud Computing, Mental Health, Fitness, and Career Development.',
+  };
+
+  const webSiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    url: SITE_URL,
+    name: 'Hexpertify Blog',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: `${SITE_URL}/?q={search_term_string}`,
+      'query-input': 'required name=search_term_string',
+    },
+  };
+
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Hexpertify',
+    url: SITE_URL,
+    logo: `${SITE_URL}/assets/logo.png`,
+    sameAs: [
+      'https://www.instagram.com/hexpertify',
+      'https://x.com/hexpertifyapp',
+      'https://www.linkedin.com/company/hexpertify',
+    ],
+  };
+
+  const faqSchema = faqs.length
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqs.map((faq) => ({
+          '@type': 'Question',
+          name: faq.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: faq.answer,
+          },
+        })),
+      }
+    : null;
+
+  const pageSchema = faqSchema
+    ? [webPageSchema, webSiteSchema, organizationSchema, faqSchema]
+    : [webPageSchema, webSiteSchema, organizationSchema];
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pageSchema) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(pageSchema) }}
+      />
 
       <main className="section-padding-y">
         <div className="max-w-7xl mx-auto page-padding">
