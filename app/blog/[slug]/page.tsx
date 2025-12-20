@@ -12,7 +12,7 @@ import { getPostBySlug, getPublishedPosts } from '@/lib/mdx';
 import { getFAQsByPage } from '@/lib/faqs';
 import SEOHead from '@/components/SEOHead';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://hexpertify-blog-sigma.vercel.app';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://blogs.hexpertify.com';
 
 interface TOCItem {
   id: number;
@@ -89,7 +89,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 import Schema from '@/components/Schema';
 
 function buildBlogGraphSchema(blog: any, faqs: any[]) {
-  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://hexpertify-blog-sigma.vercel.app';
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://blogs.hexpertify.com';
   const BLOGS_SITE_URL = SITE_URL;
   const MAIN_SITE_URL = 'https://hexpertify.com';
 
