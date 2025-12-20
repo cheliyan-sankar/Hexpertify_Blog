@@ -160,9 +160,7 @@ export default function Home() {
       }
     : null;
 
-  const pageSchema = faqSchema
-    ? [webPageSchema, webSiteSchema, organizationSchema, faqSchema]
-    : [webPageSchema, webSiteSchema, organizationSchema];
+  const pageSchema = [webPageSchema, webSiteSchema, organizationSchema];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -172,6 +170,13 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(pageSchema) }}
       />
+
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
 
       <main className="section-padding-y">
         <div className="max-w-7xl mx-auto page-padding">
