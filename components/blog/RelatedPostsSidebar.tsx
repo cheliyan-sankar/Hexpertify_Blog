@@ -16,6 +16,7 @@ interface RelatedPost {
   title: string;
   date: string;
   imageUrl: string;
+  imageAlt?: string;
   author: string;
   authorDesignation?: string;
 }
@@ -63,6 +64,7 @@ export default function RelatedPostsSidebar({ posts }: RelatedPostsSidebarProps)
                 title={post.title}
                 date={post.date}
                 imageUrl={post.imageUrl}
+                imageAlt={post.imageAlt}
                 slug={post.slug}
                 author={post.author}
                 authorDesignation={post.authorDesignation}

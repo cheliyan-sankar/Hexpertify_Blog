@@ -66,6 +66,7 @@ export default function Home() {
     description: allPosts[0].description,
     date: new Date(allPosts[0].date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
     imageUrl: allPosts[0].imageUrl,
+    imageAlt: allPosts[0].imageAlt,
     author: allPosts[0].author,
     authorDesignation: allPosts[0].authorDesignation,
   } : null;
@@ -75,6 +76,7 @@ export default function Home() {
     title: post.title,
     date: new Date(post.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
     imageUrl: post.imageUrl,
+    imageAlt: post.imageAlt,
     slug: post.slug,
     author: post.author,
     authorDesignation: post.authorDesignation,
@@ -93,6 +95,7 @@ export default function Home() {
       description: post.description,
       date: new Date(post.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
       imageUrl: post.imageUrl,
+      imageAlt: post.imageAlt,
       author: post.author,
       authorDesignation: post.authorDesignation,
     }));
@@ -255,7 +258,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-16">
             {blogPosts.length > 0 ? (
               blogPosts.map((post) => (
-                <BlogGridCard key={post.id} title={post.title} description={post.description} date={post.date} imageUrl={post.imageUrl} author={post.author} authorDesignation={post.authorDesignation} slug={post.slug} />
+                <BlogGridCard key={post.id} title={post.title} description={post.description} date={post.date} imageUrl={post.imageUrl} imageAlt={post.imageAlt} author={post.author} authorDesignation={post.authorDesignation} slug={post.slug} />
               ))
             ) : (
               <div className="col-span-3 text-center py-12 text-gray-500">

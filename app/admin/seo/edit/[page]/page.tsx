@@ -29,11 +29,13 @@ export default function EditSEOPage({ params }: { params: Promise<{ page: string
     ogTitle: '',
     ogDescription: '',
     ogImage: '',
+    ogImageAlt: '',
     ogType: 'website',
     twitterCard: 'summary_large_image',
     twitterTitle: '',
     twitterDescription: '',
     twitterImage: '',
+    twitterImageAlt: '',
     keywords: '',
     canonicalUrl: '',
     robots: 'index, follow',
@@ -127,11 +129,13 @@ export default function EditSEOPage({ params }: { params: Promise<{ page: string
         ogTitle: seo.ogTitle || '',
         ogDescription: seo.ogDescription || '',
         ogImage: seo.ogImage || '',
+        ogImageAlt: seo.ogImageAlt || '',
         ogType: seo.ogType || 'website',
         twitterCard: seo.twitterCard || 'summary_large_image',
         twitterTitle: seo.twitterTitle || '',
         twitterDescription: seo.twitterDescription || '',
         twitterImage: seo.twitterImage || '',
+        twitterImageAlt: seo.twitterImageAlt || '',
         keywords: seo.keywords || '',
         canonicalUrl: seo.canonicalUrl || '',
         robots: seo.robots || 'index, follow',
@@ -155,11 +159,13 @@ export default function EditSEOPage({ params }: { params: Promise<{ page: string
         ogTitle: formData.ogTitle || formData.title,
         ogDescription: formData.ogDescription || formData.description,
         ogImage: formData.ogImage,
+        ogImageAlt: formData.ogImageAlt,
         ogType: formData.ogType,
         twitterCard: formData.twitterCard,
         twitterTitle: formData.twitterTitle || formData.title,
         twitterDescription: formData.twitterDescription || formData.description,
         twitterImage: formData.twitterImage || formData.ogImage,
+        twitterImageAlt: formData.twitterImageAlt,
         keywords: formData.keywords,
         canonicalUrl: formData.canonicalUrl,
         robots: formData.robots,
@@ -312,13 +318,23 @@ export default function EditSEOPage({ params }: { params: Promise<{ page: string
                           Upload
                         </Button>
                       </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="ogImageAlt">OG Image Alt Text</Label>
+                        <Input
+                          id="ogImageAlt"
+                          value={formData.ogImageAlt}
+                          onChange={(e) => setFormData({ ...formData, ogImageAlt: e.target.value })}
+                          placeholder="Describe the OG image"
+                        />
+                      </div>
                       <p className="text-xs text-gray-500">1200x630px recommended</p>
                       {formData.ogImage && (
                         <div className="mt-3">
                           <div className="relative w-full max-w-md aspect-video rounded-lg overflow-hidden bg-gray-100">
                             <Image
                               src={formData.ogImage}
-                              alt="OG image preview"
+                              alt={formData.ogImageAlt || formData.ogTitle || formData.title || 'OG image preview'}
                               fill
                               className="object-cover"
                             />
@@ -402,12 +418,28 @@ export default function EditSEOPage({ params }: { params: Promise<{ page: string
                           Upload
                         </Button>
                       </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="twitterImageAlt">Twitter Image Alt Text</Label>
+                        <Input
+                          id="twitterImageAlt"
+                          value={formData.twitterImageAlt}
+                          onChange={(e) => setFormData({ ...formData, twitterImageAlt: e.target.value })}
+                          placeholder="Describe the Twitter image"
+                        />
+                      </div>
                       {formData.twitterImage && (
                         <div className="mt-3">
                           <div className="relative w-full max-w-md aspect-video rounded-lg overflow-hidden bg-gray-100">
                             <Image
                               src={formData.twitterImage}
-                              alt="Twitter image preview"
+                              alt={
+                                formData.twitterImageAlt ||
+                                formData.twitterTitle ||
+                                formData.ogTitle ||
+                                formData.title ||
+                                'Twitter image preview'
+                              }
                               fill
                               className="object-cover"
                             />

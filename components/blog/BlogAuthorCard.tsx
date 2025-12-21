@@ -9,6 +9,7 @@ interface BlogAuthorCardProps {
   author: string;
   authorDesignation?: string;
   authorAvatar?: string;
+  authorAvatarAlt?: string;
   authorConsultationUrl?: string;
   socialLinks?: {
     twitter?: string;
@@ -17,7 +18,7 @@ interface BlogAuthorCardProps {
   };
 }
 
-export default function BlogAuthorCard({ author, authorDesignation, authorAvatar, authorConsultationUrl, socialLinks }: BlogAuthorCardProps) {
+export default function BlogAuthorCard({ author, authorDesignation, authorAvatar, authorAvatarAlt, authorConsultationUrl, socialLinks }: BlogAuthorCardProps) {
   return (
     <div className="rounded-lg bg-[#A687EF]/50 p-3 sm:p-4">
       <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-3 text-center">Know your Author</h3>
@@ -27,7 +28,7 @@ export default function BlogAuthorCard({ author, authorDesignation, authorAvatar
         <div className="flex-shrink-0">
           {authorAvatar ? (
             <div className="relative h-32 w-32 rounded-lg overflow-hidden bg-white/40 flex-shrink-0 md:h-40 md:w-40 md:rounded-2xl">
-              <Image src={authorAvatar} alt={author} title={author} fill className="object-cover" />
+              <Image src={authorAvatar} alt={authorAvatarAlt || author} title={author} fill className="object-cover" />
             </div>
           ) : (
             <div className="h-32 w-32 rounded-lg bg-white/40 flex items-center justify-center md:h-40 md:w-40 md:rounded-2xl">

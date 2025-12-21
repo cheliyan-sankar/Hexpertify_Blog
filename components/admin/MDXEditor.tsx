@@ -66,17 +66,8 @@ export default function MDXEditor({ value, onChange }: MDXEditorProps) {
   };
 
   const insertImage = async () => {
-    if (process.env.VERCEL || process.env.NEXT_PUBLIC_VERCEL_ENV) {
-      if (fileInputRef.current) {
-        fileInputRef.current.click();
-      }
-    } else {
-      // For local development, prompt for URL
-      const url = prompt('Enter image URL (image upload is only available in production):', 'https://example.com/image.jpg');
-      if (url) {
-        const alt = prompt('Enter alt text for the image:', 'Blog image') || 'Blog image';
-        insertMarkdown('image', url, alt);
-      }
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
     }
   };
 
@@ -211,7 +202,7 @@ export default function MDXEditor({ value, onChange }: MDXEditorProps) {
               size="sm"
               onClick={insertImage}
               disabled={uploading}
-              title={process.env.VERCEL || process.env.NEXT_PUBLIC_VERCEL_ENV ? "Upload Image" : "Insert Image URL (upload only in production)"}
+              title="Upload Image"
             >
               {uploading ? <Upload size={16} className="animate-spin" /> : <ImageIcon size={16} />}
             </Button>

@@ -11,6 +11,7 @@ interface BlogDetailHeroProps {
     date: string;
     readTime: string;
     imageUrl: string;
+    imageAlt?: string;
     category: string;
   };
 }
@@ -56,7 +57,7 @@ export default function BlogDetailHero({ blog }: BlogDetailHeroProps) {
         <div className="relative w-full h-64 bg-gray-200">
           <Image
             src={blog.imageUrl}
-            alt={blog.title}
+            alt={blog.imageAlt || blog.title}
             title={blog.title}
             fill
             className="object-cover"

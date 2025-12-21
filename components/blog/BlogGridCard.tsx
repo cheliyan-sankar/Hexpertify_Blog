@@ -6,19 +6,20 @@ interface BlogGridCardProps {
   description: string;
   date: string;
   imageUrl: string;
+  imageAlt?: string;
   author: string;
   authorDesignation?: string;
   slug?: string;
 }
 
-export default function BlogGridCard({ title, description, date, imageUrl, author, authorDesignation, slug = '#' }: BlogGridCardProps) {
+export default function BlogGridCard({ title, description, date, imageUrl, imageAlt, author, authorDesignation, slug = '#' }: BlogGridCardProps) {
   return (
     <Link href={`/blog/${slug}`} title={`Read blog: ${title}`}>
       <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer h-full flex flex-col">
       <div className="relative w-full h-44 sm:h-60 bg-gray-200">
         <Image
           src={imageUrl}
-          alt={title}
+          alt={imageAlt || title}
           title={title}
           fill
           className="object-cover"

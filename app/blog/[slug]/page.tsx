@@ -36,6 +36,7 @@ async function getBlogData(slug: string) {
       title: p.title,
       date: new Date(p.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
       imageUrl: p.imageUrl,
+      imageAlt: p.imageAlt || '',
       author: p.author,
       authorDesignation: p.authorDesignation || '',
     }));
@@ -48,6 +49,7 @@ async function getBlogData(slug: string) {
     authorDesignation: post.authorDesignation || '',
     authorBio: post.authorBio || '',
     authorAvatar: post.authorAvatar || '',
+    authorAvatarAlt: post.authorAvatarAlt || '',
     authorConsultationUrl: post.authorConsultationUrl || '',
     authorSocialLinks: post.authorSocialLinks || {},
     tableOfContents: (post.tableOfContents || []) as TOCItem[],
@@ -55,6 +57,7 @@ async function getBlogData(slug: string) {
     rawDate: post.date,
     readTime: post.readTime,
     imageUrl: post.imageUrl,
+    imageAlt: post.imageAlt || '',
     category: post.category,
     content: post.content,
     relatedPosts,
@@ -234,6 +237,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
                 author={blog.author}
                 authorDesignation={blog.authorDesignation}
                 authorAvatar={blog.authorAvatar}
+                authorAvatarAlt={blog.authorAvatarAlt}
                 authorConsultationUrl={blog.authorConsultationUrl}
                 socialLinks={blog.authorSocialLinks}
               />
@@ -253,6 +257,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
                 author={blog.author}
                 authorDesignation={blog.authorDesignation}
                 authorAvatar={blog.authorAvatar}
+                authorAvatarAlt={blog.authorAvatarAlt}
                 authorConsultationUrl={blog.authorConsultationUrl}
                 socialLinks={blog.authorSocialLinks}
               />

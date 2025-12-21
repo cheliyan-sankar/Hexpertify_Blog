@@ -5,19 +5,20 @@ interface TopReadsCardProps {
   title: string;
   date: string;
   imageUrl: string;
+  imageAlt?: string;
   slug: string;
   author: string;
   authorDesignation?: string;
 }
 
-export default function TopReadsCard({ title, date, imageUrl, slug, author, authorDesignation }: TopReadsCardProps) {
+export default function TopReadsCard({ title, date, imageUrl, imageAlt, slug, author, authorDesignation }: TopReadsCardProps) {
   return (
     <Link href={`/blog/${slug}`} className="block" title={`Read blog: ${title}`}>
       <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer flex gap-4 p-4">
         <div className="relative w-24 h-24 flex-shrink-0 bg-gray-200 rounded">
           <Image
             src={imageUrl}
-            alt={title}
+            alt={imageAlt || title}
             title={title}
             fill
             className="object-cover rounded"

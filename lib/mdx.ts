@@ -13,6 +13,7 @@ export interface PostMetadata {
   authorDesignation?: string;
   authorBio?: string;
   authorAvatar?: string;
+  authorAvatarAlt?: string;
   authorConsultationUrl?: string;
   authorSocialLinks?: {
     twitter?: string;
@@ -21,9 +22,11 @@ export interface PostMetadata {
   };
   category: string;
   imageUrl: string;
+  imageAlt?: string;
   readTime: string;
   published: boolean;
   date: string;
+  seoOgImageAlt?: string;
   tableOfContents?: Array<{
     id: number;
     title: string;
@@ -110,13 +113,16 @@ export async function savePost(slug: string, metadata: PostMetadata, content: st
     authorDesignation: metadata.authorDesignation || '',
     authorBio: metadata.authorBio || '',
     authorAvatar: metadata.authorAvatar || '',
+    authorAvatarAlt: metadata.authorAvatarAlt || '',
     authorConsultationUrl: metadata.authorConsultationUrl || '',
     authorSocialLinks: metadata.authorSocialLinks || {},
     category: metadata.category,
     imageUrl: metadata.imageUrl,
+    imageAlt: metadata.imageAlt || '',
     readTime: metadata.readTime,
     published: metadata.published,
     date: metadata.date,
+    seoOgImageAlt: metadata.seoOgImageAlt || '',
     tableOfContents: metadata.tableOfContents || [],
   });
 

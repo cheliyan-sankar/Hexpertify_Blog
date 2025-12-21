@@ -79,13 +79,16 @@ export async function togglePublishPost(slug: string) {
       authorDesignation: post.authorDesignation,
       authorBio: post.authorBio,
       authorAvatar: post.authorAvatar,
+      authorAvatarAlt: post.authorAvatarAlt,
       authorConsultationUrl: post.authorConsultationUrl,
       authorSocialLinks: post.authorSocialLinks,
       category: post.category,
       imageUrl: post.imageUrl,
+      imageAlt: post.imageAlt,
       readTime: post.readTime,
       published: !post.published,
       date: post.date,
+      seoOgImageAlt: post.seoOgImageAlt,
       tableOfContents: post.tableOfContents,
     };
 

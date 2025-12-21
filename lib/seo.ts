@@ -22,11 +22,13 @@ export interface SEOMetadata {
   ogTitle?: string;
   ogDescription?: string;
   ogImage?: string;
+  ogImageAlt?: string;
   ogType?: string;
   twitterCard?: string;
   twitterTitle?: string;
   twitterDescription?: string;
   twitterImage?: string;
+  twitterImageAlt?: string;
   keywords?: string;
   canonicalUrl?: string;
   robots?: string;
@@ -94,11 +96,13 @@ export async function saveSEO(page: string, metadata: Omit<SEOMetadata, 'page'>)
     ogTitle: metadata.ogTitle || metadata.title,
     ogDescription: metadata.ogDescription || metadata.description,
     ogImage: metadata.ogImage || '',
+    ogImageAlt: metadata.ogImageAlt || '',
     ogType: metadata.ogType || 'website',
     twitterCard: metadata.twitterCard || 'summary_large_image',
     twitterTitle: metadata.twitterTitle || metadata.title,
     twitterDescription: metadata.twitterDescription || metadata.description,
     twitterImage: metadata.twitterImage || metadata.ogImage || '',
+    twitterImageAlt: metadata.twitterImageAlt || '',
     keywords: metadata.keywords || '',
     canonicalUrl,
     robots: metadata.robots || 'index, follow',

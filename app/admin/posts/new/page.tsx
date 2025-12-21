@@ -43,18 +43,21 @@ export default function NewPostPage() {
     authorDesignation: '',
     authorBio: '',
     authorAvatar: '',
+    authorAvatarAlt: '',
     authorConsultationUrl: '',
     authorTwitter: '',
     authorLinkedin: '',
     authorGithub: '',
     category: 'AI',
     imageUrl: '',
+    imageAlt: '',
     readTime: '5 Minutes read',
     published: false,
     seoTitle: '',
     seoDescription: '',
     seoKeywords: '',
     seoOgImage: '',
+    seoOgImageAlt: '',
     seoOgTitle: '',
     seoOgDescription: '',
     seoTwitterTitle: '',
@@ -232,6 +235,7 @@ export default function NewPostPage() {
           authorDesignation: formData.authorDesignation,
           authorBio: formData.authorBio,
           authorAvatar: formData.authorAvatar,
+          authorAvatarAlt: formData.authorAvatarAlt,
           authorConsultationUrl: formData.authorConsultationUrl,
           authorSocialLinks: {
             twitter: formData.authorTwitter,
@@ -240,9 +244,11 @@ export default function NewPostPage() {
           },
           category: formData.category,
           imageUrl: formData.imageUrl,
+          imageAlt: formData.imageAlt,
           readTime: formData.readTime,
           published: formData.published,
           date: new Date().toISOString(),
+          seoOgImageAlt: formData.seoOgImageAlt,
           tableOfContents: tocItems,
         };
 
@@ -260,6 +266,7 @@ export default function NewPostPage() {
             ogTitle: formData.seoOgTitle || formData.seoTitle || formData.title,
             ogDescription: formData.seoOgDescription || formData.seoDescription || formData.description,
             ogImage: formData.seoOgImage || formData.imageUrl,
+            ogImageAlt: formData.seoOgImageAlt || '',
             ogType: 'article',
             twitterCard: 'summary_large_image',
             twitterTitle: formData.seoTwitterTitle || formData.seoOgTitle || formData.seoTitle || formData.title,
@@ -269,6 +276,7 @@ export default function NewPostPage() {
               formData.seoDescription ||
               formData.description,
             twitterImage: '',
+            twitterImageAlt: '',
             keywords: formData.seoKeywords || '',
             canonicalUrl: '',
             robots: 'index, follow',
@@ -451,6 +459,17 @@ export default function NewPostPage() {
                               Upload
                             </Button>
                           </div>
+
+
+                          <div className="space-y-2">
+                            <Label htmlFor="authorAvatarAlt">Author Avatar Alt Text</Label>
+                            <Input
+                              id="authorAvatarAlt"
+                              value={formData.authorAvatarAlt}
+                              onChange={(e) => setFormData({ ...formData, authorAvatarAlt: e.target.value })}
+                              placeholder="Describe the author avatar image"
+                            />
+                          </div>
                           <p className="text-xs text-gray-500">
                             You can paste an existing image URL or upload directly from your computer.
                           </p>
@@ -459,7 +478,7 @@ export default function NewPostPage() {
                               <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gray-100">
                                 <Image
                                   src={formData.authorAvatar}
-                                  alt="Author avatar preview"
+                                  alt={formData.authorAvatarAlt || formData.author || 'Author avatar preview'}
                                   fill
                                   className="object-cover"
                                 />
@@ -542,6 +561,16 @@ export default function NewPostPage() {
                           Upload
                         </Button>
                       </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="imageAlt">Featured Image Alt Text</Label>
+                        <Input
+                          id="imageAlt"
+                          value={formData.imageAlt}
+                          onChange={(e) => setFormData({ ...formData, imageAlt: e.target.value })}
+                          placeholder="Describe the featured image"
+                        />
+                      </div>
                       <p className="text-xs text-gray-500">
                         You can paste an existing image URL or upload directly from your computer.
                       </p>
@@ -550,7 +579,7 @@ export default function NewPostPage() {
                           <div className="relative w-full max-w-md aspect-video rounded-lg overflow-hidden bg-gray-100">
                             <Image
                               src={formData.imageUrl}
-                              alt="Featured image preview"
+                              alt={formData.imageAlt || formData.title || 'Featured image preview'}
                               fill
                               className="object-cover"
                             />
@@ -710,6 +739,16 @@ export default function NewPostPage() {
                             Upload
                           </Button>
                         </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="seoOgImageAlt">Social Share Image Alt Text</Label>
+                          <Input
+                            id="seoOgImageAlt"
+                            value={formData.seoOgImageAlt}
+                            onChange={(e) => setFormData({ ...formData, seoOgImageAlt: e.target.value })}
+                            placeholder="Describe the social share image"
+                          />
+                        </div>
                         <p className="text-xs text-gray-500">
                           Recommended: 1200x630 image used for social previews.
                         </p>
@@ -718,7 +757,13 @@ export default function NewPostPage() {
                             <div className="relative w-full max-w-md aspect-video rounded-lg overflow-hidden bg-gray-100">
                               <Image
                                 src={formData.seoOgImage || formData.imageUrl}
-                                alt="Social share image preview"
+                                alt={
+                                  formData.seoOgImageAlt ||
+                                  formData.seoOgTitle ||
+                                  formData.seoTitle ||
+                                  formData.title ||
+                                  'Social share image preview'
+                                }
                                 fill
                                 className="object-cover"
                               />
