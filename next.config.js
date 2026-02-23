@@ -4,6 +4,7 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  basePath: '/blogs',
   assetPrefix: '/blogs',
   images: { unoptimized: true },
   experimental: {
