@@ -23,18 +23,21 @@ function CategoriesPage() {
 
   const loadCategories = useCallback(async () => {
     try {
-      const basePath = typeof window !== 'undefined' ? (window as any).__NEXT_DATA__?.basePath || '' : '';
+      const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
       const api = `${basePath}/api/categories`;
       const response = await fetch(api);
       const text = await response.text();
       if (!text) {
+        // empty body usually means the route was incorrect (404) or server
+        // returned no content; log the response for debugging.
+        console.error('Received empty body from', api, 'status', response.status);
         throw new Error('Empty response from server');
       }
       let data: any;
       try {
         data = JSON.parse(text);
       } catch (err) {
-        console.error('Failed to parse JSON from /api/categories:', text);
+        console.error('Failed to parse JSON from', api, 'body:', text);
         throw new Error('Invalid JSON response from server');
       }
 
@@ -65,7 +68,7 @@ function CategoriesPage() {
     setActionLoading(true);
 
     try {
-      const basePath = typeof window !== 'undefined' ? (window as any).__NEXT_DATA__?.basePath || '' : '';
+      const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
       const api = `${basePath}/api/categories`;
       const response = await fetch(api, {
         method: 'POST',
@@ -107,7 +110,7 @@ function CategoriesPage() {
     setActionLoading(true);
 
     try {
-      const basePath = typeof window !== 'undefined' ? (window as any).__NEXT_DATA__?.basePath || '' : '';
+      const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
       const api = `${basePath}/api/categories`;
       const response = await fetch(api, {
         method: 'DELETE',

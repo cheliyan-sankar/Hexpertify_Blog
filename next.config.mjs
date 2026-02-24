@@ -15,6 +15,10 @@ const nextConfig = {
   basePath,
   assetPrefix,
   images: { unoptimized: true },
+  env: {
+    // expose the basePath to the client so we can build absolute URLs
+    NEXT_PUBLIC_BASE_PATH: basePath,
+  },
   experimental: {
     serverActions: {
       allowedOrigins: ['localhost:3000', 'localhost:3001', 'scaling-spork-jj9jvg9rvrjq2pv4p-3001.app.github.dev'],
