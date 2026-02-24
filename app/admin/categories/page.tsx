@@ -23,7 +23,9 @@ function CategoriesPage() {
 
   const loadCategories = useCallback(async () => {
     try {
-      const response = await fetch('/api/categories');
+      const basePath = typeof window !== 'undefined' ? (window as any).__NEXT_DATA__?.basePath || '' : '';
+      const api = `${basePath}/api/categories`;
+      const response = await fetch(api);
       const text = await response.text();
       if (!text) {
         throw new Error('Empty response from server');
@@ -63,7 +65,9 @@ function CategoriesPage() {
     setActionLoading(true);
 
     try {
-      const response = await fetch('/api/categories', {
+      const basePath = typeof window !== 'undefined' ? (window as any).__NEXT_DATA__?.basePath || '' : '';
+      const api = `${basePath}/api/categories`;
+      const response = await fetch(api, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -103,7 +107,9 @@ function CategoriesPage() {
     setActionLoading(true);
 
     try {
-      const response = await fetch('/api/categories', {
+      const basePath = typeof window !== 'undefined' ? (window as any).__NEXT_DATA__?.basePath || '' : '';
+      const api = `${basePath}/api/categories`;
+      const response = await fetch(api, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
