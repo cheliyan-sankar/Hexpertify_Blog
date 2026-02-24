@@ -55,6 +55,20 @@ npm run dev
 
 Visit `http://localhost:3000` to see the blog.
 
+> **Environment tokens**
+>
+> The admin panel uses GitHub commits to persist changes to categories, posts,
+> FAQs, etc.  This requires a **personal access token** (PAT) with `repo`
+> permissions set in `GITHUB_TOKEN` (usually via a `.env.local` file).  If the
+> variable is empty the code will fall back to writing files on disk, which is
+> convenient for local development.
+>
+> GitHub-provided tokens (e.g. the `GITHUB_TOKEN` injected in Codespaces or
+> Actions) are often read-only and will trigger a `403 Forbidden` error when the
+> app attempts to commit.  We explicitly ignore such tokens at startup and
+> revert to local file access; if you see a warning about an ignored token,
+> either unset it or supply a proper PAT.
+
 
 ## Project Structure
 

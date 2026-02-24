@@ -1,7 +1,20 @@
 import fs from 'fs';
 import path from 'path';
 
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+// The automatic `GITHUB_TOKEN` provided in environments like Codespaces or
+// GitHub Actions is often read‑only and cannot create commits.  We only want to
+// use the token if it's a real personal access token (PAT) with write scopes.
+// PATs created by users start with `ghp_` (or `gho_` / `ghu_` for older/newer
+// formats) while the injected tokens often start with `ghu_` and lack repo
+// permissions.  When running locally we also fall back to file‑system writes if
+// no usable token is available.
+const rawToken = process.env.GITHUB_TOKEN || '';
+const GITHUB_TOKEN = rawToken && /^gh[pou]_[A-Za-z0-9]+$/.test(rawToken) ? rawToken : '';
+
+if (rawToken && !GITHUB_TOKEN) {
+  console.warn('Ignoring provided GITHUB_TOKEN because it does not appear to be a write-capable personal access token. Falling back to local file operations.');
+}
+
 const GITHUB_OWNER = process.env.GITHUB_OWNER || 'ranjanihub';
 const GITHUB_REPO = process.env.GITHUB_REPO || 'Hexpertify_Blog';
 const GITHUB_BRANCH = process.env.GITHUB_BRANCH || 'main';
