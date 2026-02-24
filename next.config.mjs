@@ -14,4 +14,8 @@ const nextConfig = {
   },
 };
 
+<<<<<<< HEAD:next.config.js
 export default withMicrofrontends(nextConfig);
+=======
+export default nextConfig;
+>>>>>>> c8a6bec (fix(next): use ESM next.config.mjs to resolve build import error):next.config.mjs
