@@ -2,6 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Script from 'next/script';
+import { Suspense } from 'react';
 import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
 import Analytics from '@/components/Analytics';
@@ -48,9 +49,10 @@ gtag('config', '${process.env.NEXT_PUBLIC_GA_ID || 'G-S5X3C2J8LV'}');`}
       </head>
       <body className={inter.className}>
         {/* client-side analytics will track route changes */}
-        <Analytics />
-        {/* client-side analytics will track route changes */}
-        <Analytics />
+        <React.Suspense fallback={null}>
+          <Analytics />
+        </React.Suspense>
+
         {children}
         <Footer />
       </body>
