@@ -5,6 +5,7 @@ import { triggerRebuild } from '@/lib/github';
 
 export async function GET() {
   try {
+    console.log('GET /api/categories called');
     const categories = await getAllCategories();
     return NextResponse.json({ success: true, categories });
   } catch (error: any) {
