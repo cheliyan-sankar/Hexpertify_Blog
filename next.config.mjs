@@ -1,12 +1,19 @@
 // `@vercel/microfrontends` removed to avoid install-time peer conflicts.
 // If you need microfrontends, reinstall the package and re-enable the wrapper.
 /** @type {import('next').NextConfig} */
+const isDev = process.env.NODE_ENV !== 'production';
+// In development we want no basePath so local dev runs at http://localhost:3000
+// In production the app can opt into a basePath by setting NEXT_BASE_PATH or
+// fallback to '/blogs' (existing production behavior).
+const basePath = isDev ? '' : (process.env.NEXT_BASE_PATH ?? '/blogs');
+const assetPrefix = isDev ? '' : (process.env.ASSET_PREFIX ?? basePath);
+
 const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  basePath: '/blogs',
-  assetPrefix: '/blogs',
+  basePath,
+  assetPrefix,
   images: { unoptimized: true },
   experimental: {
     serverActions: {
