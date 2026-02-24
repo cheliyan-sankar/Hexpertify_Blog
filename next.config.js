@@ -1,8 +1,11 @@
+import { withMicrofrontends } from '@vercel/microfrontends/next/config';
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  basePath: '/blogs',
+  assetPrefix: '/blogs',
   images: { unoptimized: true },
   experimental: {
     serverActions: {
@@ -11,4 +14,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+export default withMicrofrontends(nextConfig);

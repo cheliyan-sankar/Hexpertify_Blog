@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/microfrontends.json",
+  "applications": {
+    "hexpertify-blog": {
+      "development": {
+        "fallback": "hexpertify-blog-flame.vercel.app"
+      }
+    }
+  }
+}
